@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!--Se usaron templates de Bulma para hacer este frontend. (https://bulma.io/)-->
+<html>
+    <head>
+        <title>CS Marketplace</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="My first HTML">
+        <meta name="keywords" content="HTML, CSS, JavaScript">
+        <meta name="author" content="Team 9Z">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    </head>
+    <body>
+        <div class="container is-fluid">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+          
+                <div id="navbarBasicExample" class="navbar-menu">
+                    <div class="navbar-start">
+                        <a class="navbar-item" href="index.html">
+                        CS Marketplace
+                        </a>
+            
+                        <a class="navbar-item" href="users.html">
+                        Perfil
+                        </a>
+
+                        <a class="navbar-item" href="skins.html">
+                            Skins
+                        </a>
+
+                        <a class="navbar-item" href="cajas.html">
+                        Cajas
+                        </a>
+                    </div>
+            
+                    <div class="navbar-end">
+                        <div class="navbar-item">
+                            <div class="buttons">
+                                <a class="button is-primary">
+                                <strong>Sign up</strong>
+                                </a>
+                                <a class="button is-light">
+                                Log in
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <table class="table is-fullwidth is-striped">
+                <thead>
+                  <tr>
+                    <th>Nombre de Usuario</th>
+                    <th>Email Registrado</th>
+                    <th>Balance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>buda</td>
+                    <td>budaCS@gmail.com</td>
+                    <td>$12500</td>
+                  </tr>
+                </tbody>
+              </table>
+              <h1 class="title">Inventario:</h1>
+              <table class="table is-fullwidth">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Nombre</th>                                                
+                    <th>Tipo</th>
+                    <th>Rareza</th>
+                    <th>Precio</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <figure class="image is-128x128">
+                                <img src="https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/default_generated/weapon_awp_awp_tempered_light_png.png" />
+                            </figure>
+                        </td>
+                        <td>Chrome Cannon</td>
+                        <td>AWP</td>
+                        <td>Covert</td>
+                        <td>$400</td>
+                        <td><button class="button is-focused">Vender</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
