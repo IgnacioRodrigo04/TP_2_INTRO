@@ -28,7 +28,21 @@ app.get('/api/v1/usuarios/:id', (req, res) => {
     res.json(usuario)   
 })
 
+app.post('/api/v1/usuarios', (req, res) => {
+    const nuevo = {
+        id: usuarios.length+1,
+        nombre: req.body.nombre,
+        plata: req.body.plata ?? 0,
+        coleccion: []
+    }
 
+    if(nuevo.nombre === undefined){
+        res.sendStatus(400)
+        return
+    }
+    usuarios.push(nuevo)
+    res.sendStatus(201)
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
