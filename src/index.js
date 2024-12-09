@@ -28,6 +28,8 @@ app.get('/api/v1/usuarios/:id', (req, res) => {
     res.json(usuario)   
 })
 
+
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
