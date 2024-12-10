@@ -53,7 +53,7 @@ app.delete('/api/v1/usuarios/:id', (req, res) => {
         res.sendStatus(400)
         return
     }
-    
+
     const eliminar = usuarios.find((element) => element.id == req.params.id)
     if(eliminar === undefined){
         res.sendStatus(404)
@@ -62,6 +62,17 @@ app.delete('/api/v1/usuarios/:id', (req, res) => {
 
     usuarios = usuarios.filter((element) => element.id != req.params.id)
     res.send(eliminar).status(200)
+})
+
+app.put('/api/v1/usuarios/:id' , (req, res) =>{
+    let editar_indice = usuarios.findIndex((element) => element.id == req.params.id)
+    if(editar_indice === -1){
+        res.sendStatus(404)
+        return
+    }
+    usuarios[editar_indice].nombre = req.body.nombre ?? usuarios[editar_indice].nombre
+    usuarios[editar_indice].plata = req.body.plata ?? usuarios[editar_indice].plata
+    res.send(usuarios[editar_indice]).status(200)
 })
 
 app.listen(port, () => {
