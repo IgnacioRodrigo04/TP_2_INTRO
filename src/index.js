@@ -7,7 +7,9 @@ app.use(express.json())
 let usuarios = [{
     id: 1,
     nombre: "nacho",
-    plata: 100,
+    balance: 100,
+    mail: "hola@gmail.com",
+    contraseña: "sdkiedk1",
     coleccion: []    
 }]
 
@@ -32,15 +34,22 @@ app.get('/api/v1/usuarios/:id', (req, res) => {
     res.json(usuario)   
 })
 
+function validar_mail(mail) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(mail);
+}
+
 app.post('/api/v1/usuarios', (req, res) => {
     const nuevo = {
         id: usuarios.length+1,
         nombre: req.body.nombre,
-        plata: req.body.plata ?? 0,
+        balance: req.body.balance ?? 0,
+        mail: req.body.mail,
+        contraseña: req.body.contraseña,
         coleccion: []
     }
 
-    if(nuevo.nombre === undefined){
+    if(nuevo.nombre === undefined || nuevo.contraseña === undefined || !validar_mail(nuevo.mail)){
         res.sendStatus(400)
         return
     }
@@ -64,6 +73,8 @@ app.delete('/api/v1/usuarios/:id', (req, res) => {
     res.send(eliminar).status(200)
 })
 
+
+
 app.put('/api/v1/usuarios/:id' , (req, res) =>{
     let editar_indice = usuarios.findIndex((element) => element.id == req.params.id)
     if(editar_indice === -1){
@@ -71,7 +82,15 @@ app.put('/api/v1/usuarios/:id' , (req, res) =>{
         return
     }
     usuarios[editar_indice].nombre = req.body.nombre ?? usuarios[editar_indice].nombre
-    usuarios[editar_indice].plata = req.body.plata ?? usuarios[editar_indice].plata
+    usuarios[editar_indice].balance = req.body.balance ?? usuarios[editar_indice].balance
+    usuarios[editar_indice].mail = req.body.mail ?? usuarios[editar_indice].mail
+    usuarios[editar_indice].contraseña = req.body.contraseña ?? usuarios[editar_indice].contraseña
+
+    if(!validar_mail(usuarios[editar_indice].mail)){ 
+        res.sendStatus(400)
+        return
+    }
+
     res.send(usuarios[editar_indice]).status(200)
 })
 
