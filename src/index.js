@@ -13,6 +13,15 @@ let usuarios = [{
     coleccion: []    
 }]
 
+let skins = [{
+    id: 1,
+    nombre: "fuego epico",
+    precio: 2,
+    tipo: "awp",
+    rareza: "super epica",
+    imagen: undefined   
+}]
+
 app.get('/', (req, res) => {
   res.send('Skins CS')
 })
@@ -93,6 +102,12 @@ app.put('/api/v1/usuarios/:id' , (req, res) =>{
 
     res.send(usuarios[editar_indice]).status(200)
 })
+
+
+app.get('/api/v1/skins' , (req, res) =>{
+    res.json(skins)
+})
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
