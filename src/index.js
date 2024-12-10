@@ -19,7 +19,11 @@ app.get('/api/v1/usuarios', (req, res) => {
     res.json(usuarios)
 })
 
-app.get('/api/v1/usuarios/:id', (req, res) => {    
+app.get('/api/v1/usuarios/:id', (req, res) => {
+    if (typeof req.params.id !== "number") {
+        res.sendStatus(400)
+        return
+    }  
     const usuario = usuarios.find((element) => element.id == req.params.id)
     if(usuario === undefined){
         res.sendStatus(404)
@@ -42,6 +46,22 @@ app.post('/api/v1/usuarios', (req, res) => {
     }
     usuarios.push(nuevo)
     res.sendStatus(201)
+})
+
+app.delete('/api/v1/usuarios/:id', (req, res) => {
+    if (typeof req.params.id !== "number") {
+        res.sendStatus(400)
+        return
+    }
+    
+    const eliminar = usuarios.find((element) => element.id == req.params.id)
+    if(eliminar === undefined){
+        res.sendStatus(404)
+        return
+    }
+
+    usuarios = usuarios.filter((element) => element.id != req.params.id)
+    res.send(eliminar).status(200)
 })
 
 app.listen(port, () => {
