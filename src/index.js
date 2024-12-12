@@ -16,12 +16,11 @@ let usuarios = [{
 let skins = [{
     id: 1,
     nombre: "fuego epico",
-    precio: 2,
-    tipo: "awp",
     rareza: "super epica",
+    tipo: "awp",
+    usado: 0,
     imagen: undefined   
 }]
-
 
 app.get('/', (req, res) => {
   res.send('Skins CS')
@@ -128,6 +127,26 @@ app.get('/api/v1/skins/:id' , (req, res) => {
         return
     }
     res.json(skin) 
+})
+
+app.post('/api/v1/skins', (req, res) =>{
+    const nuevo = {
+        id: skins.length+1,
+        nombre: req.body.nombre,
+        rareza: req.body.rareza,
+        tipo: req.body.tipo,
+        usado: req.body.usado ?? 2,
+        imagen_url: req.body.imagen_url
+    }
+
+    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen_url === undefined){
+        res.sendStatus(400)
+        return;
+    }
+
+    skins.push(nuevo)
+    res.sendStatus(201)
+
 })
 
 app.listen(port, () => {
