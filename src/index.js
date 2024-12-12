@@ -22,6 +22,7 @@ let skins = [{
     imagen: undefined   
 }]
 
+
 app.get('/', (req, res) => {
   res.send('Skins CS')
 })
@@ -30,11 +31,19 @@ app.get('/api/v1/usuarios', (req, res) => {
     res.json(usuarios)
 })
 
+function validar_id(id) {
+    id = Number(id); 
+    if (isNaN(id) || !Number.isInteger(id)) { 
+        return false;
+    }
+    return true;
+}
+
 app.get('/api/v1/usuarios/:id', (req, res) => {
-    if (typeof req.params.id !== "number") {
+    if(!validar_id(req.params.id)){
         res.sendStatus(400)
-        return
-    }  
+        return;
+    }
     const usuario = usuarios.find((element) => element.id == req.params.id)
     if(usuario === undefined){
         res.sendStatus(404)
@@ -58,7 +67,7 @@ app.post('/api/v1/usuarios', (req, res) => {
         coleccion: []
     }
 
-    if(nuevo.nombre === undefined || nuevo.contraseña === undefined || !validar_mail(nuevo.mail)){
+    if(nuevo.nombre === undefined || nuevo.contraseña === undefined || !validar_mail(nuevo.mail) || nuevo.balance < 0){
         res.sendStatus(400)
         return
     }
@@ -67,11 +76,10 @@ app.post('/api/v1/usuarios', (req, res) => {
 })
 
 app.delete('/api/v1/usuarios/:id', (req, res) => {
-    if (typeof req.params.id !== "number") {
+    if(!validar_id(req.params.id)){
         res.sendStatus(400)
-        return
+        return;
     }
-
     const eliminar = usuarios.find((element) => element.id == req.params.id)
     if(eliminar === undefined){
         res.sendStatus(404)
@@ -95,7 +103,7 @@ app.put('/api/v1/usuarios/:id' , (req, res) =>{
     usuarios[editar_indice].mail = req.body.mail ?? usuarios[editar_indice].mail
     usuarios[editar_indice].contraseña = req.body.contraseña ?? usuarios[editar_indice].contraseña
 
-    if(!validar_mail(usuarios[editar_indice].mail)){ 
+    if(!validar_mail(usuarios[editar_indice].mail) || ususarios[editar_indice].balance < 0){ 
         res.sendStatus(400)
         return
     }
@@ -104,10 +112,23 @@ app.put('/api/v1/usuarios/:id' , (req, res) =>{
 })
 
 
-app.get('/api/v1/skins' , (req, res) =>{
+app.get('/api/v1/skins', (req, res) =>{
     res.json(skins)
 })
 
+app.get('/api/v1/skins/:id' , (req, res) => {
+    if(!validar_id(req.params.id)){
+        res.sendStatus(400)
+        return;
+    }
+
+    const skin = skins.find((element) => element.id == req.params.id)
+    if(skin === undefined){
+        res.sendStatus(404)
+        return
+    }
+    res.json(skin) 
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
