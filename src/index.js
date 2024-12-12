@@ -149,6 +149,23 @@ app.post('/api/v1/skins', (req, res) =>{
 
 })
 
+
+app.delete('/api/v1/skins/:id', (req, res) => {
+    if(!validar_id(req.params.id)){
+        res.sendStatus(400)
+        return;
+    }
+
+    const eliminar = skins.find((element) => element.id == req.params.id)
+    if(eliminar === undefined){
+        res.sendStatus(404)
+        return
+    }
+
+    skins = skins.filter((element) => element.id != req.params.id)
+    res.send(eliminar).status(200)
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
