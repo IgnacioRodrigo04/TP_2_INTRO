@@ -20,8 +20,16 @@ let skins = [{
     tipo: "awp",
     usado: 0,
     imagen: undefined   
-}]
+},{
+    id: 2,
+    nombre: "sombra asesina",
+    rareza: "ultra epica",
+    tipo: "awp",
+    usado: 4,
+    imagen: undefined   
+}
 
+]
 app.get('/', (req, res) => {
   res.send('Skins CS')
 })
@@ -164,6 +172,28 @@ app.delete('/api/v1/skins/:id', (req, res) => {
 
     skins = skins.filter((element) => element.id != req.params.id)
     res.send(eliminar).status(200)
+})
+
+app.put('/api/v1/skins/:id' , (req, res) =>{
+    let editar_indice = skins.findIndex((element) => element.id == req.params.id)
+    if(editar_indice === -1){
+        res.sendStatus(404)
+        return
+    }
+    skins[editar_indice].nombre = req.body.nombre ?? skins[editar_indice].nombre
+    skins[editar_indice].tipo = req.body.tipo ?? skins[editar_indice].tipo
+    skins[editar_indice].rareza = req.body.rareza ?? skins[editar_indice].rareza
+    skins[editar_indice].usado = req.body.usado ?? skins[editar_indice].usado
+    skins[editar_indice].imagen_url = req.body.imagen_url ?? skins[editar_indice].imagen_url
+
+    nuevo = skins[editar_indice]
+    
+    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen_url === undefined || 0 < nuevo.usado > 5){
+        res.sendStatus(400)
+        return;
+    }
+
+    res.send(skins[editar_indice]).status(200)
 })
 
 app.listen(port, () => {

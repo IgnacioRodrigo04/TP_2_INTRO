@@ -1,0 +1,24 @@
+meta {
+  name: Editar skin
+  type: http
+  seq: 5
+}
+
+delete {
+  url: http://localhost:3000/api/v1/skins/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 1
+}
+
+body:json {
+  {
+    "nombre": "sopotrapo",
+    "tipo": "metralleta",
+    "rareza": "legendaria",
+    "imagen_url": 2
+  }
+}
