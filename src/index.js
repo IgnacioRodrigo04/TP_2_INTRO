@@ -211,6 +211,20 @@ app.get('/api/v1/cajas/', (req, res)=>{
 })
 
 
+app.get('/api/v1/cajas/:id' , (req, res) => {
+    if(!validar_id(req.params.id)){
+        res.sendStatus(400)
+        return;
+    }
+
+    const caja = cajas.find((element) => element.id == req.params.id)
+    if(caja === undefined){
+        res.sendStatus(404)
+        return
+    }
+    res.json(caja) 
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
