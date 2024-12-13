@@ -10,7 +10,7 @@ let usuarios = [{
     balance: 100,
     mail: "hola@gmail.com",
     contraseña: "sdkiedk1",
-    coleccion: []    
+    skins_compradas: []    
 }]
 
 let skins = [{
@@ -18,18 +18,27 @@ let skins = [{
     nombre: "fuego epico",
     rareza: "super epica",
     tipo: "awp",
-    usado: 0,
+    precio_mercado: 0,
     imagen: undefined   
 },{
     id: 2,
     nombre: "sombra asesina",
     rareza: "ultra epica",
     tipo: "awp",
-    usado: 4,
+    precio_mercado: 4,
     imagen: undefined   
-}
+}]
 
-]
+let cajas = [{
+    id: 1, 
+    nombre: "caja lolera",
+    precio: 10,
+    tipo: "epica",
+    imagen_url: undefined,
+    posibles_skins: []
+
+}]
+
 app.get('/', (req, res) => {
   res.send('Skins CS')
 })
@@ -71,7 +80,7 @@ app.post('/api/v1/usuarios', (req, res) => {
         balance: req.body.balance ?? 0,
         mail: req.body.mail,
         contraseña: req.body.contraseña,
-        coleccion: []
+        skins_compradas: []
     }
 
     if(nuevo.nombre === undefined || nuevo.contraseña === undefined || !validar_mail(nuevo.mail) || nuevo.balance < 0){
@@ -143,7 +152,7 @@ app.post('/api/v1/skins', (req, res) =>{
         nombre: req.body.nombre,
         rareza: req.body.rareza,
         tipo: req.body.tipo,
-        usado: req.body.usado ?? 2,
+        precio_mercado: req.body.precio_mercado ?? 2,
         imagen_url: req.body.imagen_url
     }
 
@@ -183,18 +192,24 @@ app.put('/api/v1/skins/:id' , (req, res) =>{
     skins[editar_indice].nombre = req.body.nombre ?? skins[editar_indice].nombre
     skins[editar_indice].tipo = req.body.tipo ?? skins[editar_indice].tipo
     skins[editar_indice].rareza = req.body.rareza ?? skins[editar_indice].rareza
-    skins[editar_indice].usado = req.body.usado ?? skins[editar_indice].usado
+    skins[editar_indice].precio_mercado = req.body.precio_mercado ?? skins[editar_indice].precio_mercado
     skins[editar_indice].imagen_url = req.body.imagen_url ?? skins[editar_indice].imagen_url
 
     nuevo = skins[editar_indice]
     
-    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen_url === undefined || 0 < nuevo.usado > 5){
+    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen_url === undefined || 0 < nuevo.precio_mercado > 5){
         res.sendStatus(400)
         return;
     }
 
     res.send(skins[editar_indice]).status(200)
 })
+
+
+app.get('/api/v1/cajas/', (req, res)=>{
+    res.json(cajas)
+})
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
