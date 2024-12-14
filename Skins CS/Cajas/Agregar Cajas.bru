@@ -1,0 +1,22 @@
+meta {
+  name: Agregar Cajas
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/api/v1/cajas
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "cajita loca",
+    "precio": 90,
+    "tipo": "rara",
+    "imagen_url": "ñ",
+    "posibles_skins": ["fuego epico", "serpiente venenosa"]
+    
+  }
+}

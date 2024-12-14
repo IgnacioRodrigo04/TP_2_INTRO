@@ -47,16 +47,16 @@ app.get('/api/v1/usuarios', (req, res) => {
     res.json(usuarios)
 })
 
-function validar_id(id) {
-    id = Number(id); 
-    if (isNaN(id) || !Number.isInteger(id)) { 
+function validar_numero(numero) {
+    numero = Number(numero); 
+    if (isNaN(numero) || !Number.isInteger(numero)) { 
         return false;
     }
     return true;
 }
 
 app.get('/api/v1/usuarios/:id', (req, res) => {
-    if(!validar_id(req.params.id)){
+    if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
@@ -83,7 +83,7 @@ app.post('/api/v1/usuarios', (req, res) => {
         skins_compradas: []
     }
 
-    if(nuevo.nombre === undefined || nuevo.contraseña === undefined || !validar_mail(nuevo.mail) || nuevo.balance < 0){
+    if(nuevo.nombre === undefined || nuevo.contraseña === undefined || !validar_mail(nuevo.mail) || !validar_numero(nuevo.balance) || nuevo.balance < 0){
         res.sendStatus(400)
         return
     }
@@ -92,7 +92,7 @@ app.post('/api/v1/usuarios', (req, res) => {
 })
 
 app.delete('/api/v1/usuarios/:id', (req, res) => {
-    if(!validar_id(req.params.id)){
+    if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
@@ -119,7 +119,7 @@ app.put('/api/v1/usuarios/:id' , (req, res) =>{
     usuarios[editar_indice].mail = req.body.mail ?? usuarios[editar_indice].mail
     usuarios[editar_indice].contraseña = req.body.contraseña ?? usuarios[editar_indice].contraseña
 
-    if(!validar_mail(usuarios[editar_indice].mail) || ususarios[editar_indice].balance < 0){ 
+    if(!validar_mail(usuarios[editar_indice].mail) || usuarios[editar_indice].balance < 0 || !validar_numero(ususarios[editar_indice].balance)){ 
         res.sendStatus(400)
         return
     }
@@ -133,7 +133,7 @@ app.get('/api/v1/skins', (req, res) =>{
 })
 
 app.get('/api/v1/skins/:id' , (req, res) => {
-    if(!validar_id(req.params.id)){
+    if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
@@ -152,11 +152,11 @@ app.post('/api/v1/skins', (req, res) =>{
         nombre: req.body.nombre,
         rareza: req.body.rareza,
         tipo: req.body.tipo,
-        precio_mercado: req.body.precio_mercado ?? 2,
+        precio_mercado: req.body.precio_mercado ?? 100,
         imagen_url: req.body.imagen_url
     }
 
-    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen_url === undefined){
+    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen_url === undefined || !validar_numero(nuevo.precio_mercado) || nuevo.precio_mercado <= 0){
         res.sendStatus(400)
         return;
     }
@@ -168,7 +168,7 @@ app.post('/api/v1/skins', (req, res) =>{
 
 
 app.delete('/api/v1/skins/:id', (req, res) => {
-    if(!validar_id(req.params.id)){
+    if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
@@ -197,7 +197,7 @@ app.put('/api/v1/skins/:id' , (req, res) =>{
 
     nuevo = skins[editar_indice]
     
-    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen_url === undefined || 0 < nuevo.precio_mercado > 5){
+    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen_url === undefined ||!validar_numero(nuevo.precio_mercado) || nuevo.precio_mercado <= 0){
         res.sendStatus(400)
         return;
     }
@@ -212,7 +212,7 @@ app.get('/api/v1/cajas/', (req, res)=>{
 
 
 app.get('/api/v1/cajas/:id' , (req, res) => {
-    if(!validar_id(req.params.id)){
+    if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
@@ -223,6 +223,27 @@ app.get('/api/v1/cajas/:id' , (req, res) => {
         return
     }
     res.json(caja) 
+})
+
+app.post('/api/v1/cajas', (req, res) =>{
+    const nuevo = {
+        id: skins.length+1,
+        nombre: req.body.nombre,
+        precio: req.body.precio,
+        tipo: req.body.tipo,
+        imagen_url: req.body.imagen_url,
+        posibles_skins: req.body.posibles_skins
+    }
+
+    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.precio === undefined || nuevo.imagen_url === undefined || !Array.isArray(nuevo.posibles_skins) || 
+    nuevo.posibles_skins.length === 0 ||!validar_numero(nuevo.precio) || nuevo.precio <= 0){
+        res.sendStatus(400)
+        return;
+    }
+
+    skins.push(nuevo)
+    res.sendStatus(201)
+
 })
 
 app.listen(port, () => {
