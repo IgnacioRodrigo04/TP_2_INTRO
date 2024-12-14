@@ -262,6 +262,30 @@ app.delete('/api/v1/cajas/:id', (req, res) => {
     res.send(eliminar).status(200)
 })
 
+app.put('/api/v1/cajas/:id' , (req, res) =>{
+    let editar_indice = cajas.findIndex((element) => element.id == req.params.id)
+    if(editar_indice === -1){
+        res.sendStatus(404)
+        return
+    }
+    cajas[editar_indice].nombre = req.body.nombre ?? cajas[editar_indice].nombre
+    cajas[editar_indice].tipo = req.body.tipo ?? cajas[editar_indice].tipo
+    cajas[editar_indice].precio = req.body.precio ?? cajas[editar_indice].precio
+    cajas[editar_indice].imagen_url = req.body.imagen_url ?? cajas[editar_indice].imagen_url
+    cajas[editar_indice].posibles_skins = req.body.posibles_skins ?? cajas[editar_indice].posibles_skins
+
+    nuevo = cajas[editar_indice]
+    
+    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.precio === undefined || nuevo.imagen_url === undefined || 
+        nuevo.posibles_skins === undefined || !Array.isArray(nuevo.posibles_skins) || nuevo.posibles_skins.length === 0
+        || !validar_numero(nuevo.precio) || nuevo.precio <= 0){
+        res.sendStatus(400)
+        return;
+    }
+
+    res.send(cajas[editar_indice]).status(200)
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
