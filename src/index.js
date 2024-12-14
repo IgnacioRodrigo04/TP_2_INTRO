@@ -227,7 +227,7 @@ app.get('/api/v1/cajas/:id' , (req, res) => {
 
 app.post('/api/v1/cajas', (req, res) =>{
     const nuevo = {
-        id: skins.length+1,
+        id: cajas.length+1,
         nombre: req.body.nombre,
         precio: req.body.precio,
         tipo: req.body.tipo,
@@ -241,9 +241,25 @@ app.post('/api/v1/cajas', (req, res) =>{
         return;
     }
 
-    skins.push(nuevo)
+    cajas.push(nuevo)
     res.sendStatus(201)
 
+})
+
+app.delete('/api/v1/cajas/:id', (req, res) => {
+    if(!validar_numero(req.params.id)){
+        res.sendStatus(400)
+        return;
+    }
+
+    const eliminar = cajas.find((element) => element.id == req.params.id)
+    if(eliminar === undefined){
+        res.sendStatus(404)
+        return
+    }
+
+    cajas = cajas.filter((element) => element.id != req.params.id)
+    res.send(eliminar).status(200)
 })
 
 app.listen(port, () => {
