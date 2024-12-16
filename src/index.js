@@ -283,6 +283,13 @@ app.put('/api/v1/cajas/:id' , (req, res) =>{
         return;
     }
 
+    for(let i=0; i < nuevo.posibles_skins.length; i++){
+        if(!validar_numero(nuevo.posibles_skins[i])){
+            res.sendStatus(400)
+            return;
+        }
+    }
+
     res.send(cajas[editar_indice]).status(200)
 })
 

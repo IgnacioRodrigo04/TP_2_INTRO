@@ -4,10 +4,14 @@ meta {
   seq: 4
 }
 
-post {
-  url: http://localhost:3000/api/v1/cajas
+delete {
+  url: http://localhost:3000/api/v1/cajas/:id
   body: json
   auth: none
+}
+
+params:path {
+  id: 
 }
 
 body:json {
