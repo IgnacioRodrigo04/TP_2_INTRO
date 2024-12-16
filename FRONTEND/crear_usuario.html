@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--Se usaron templates de Bulma para hacer este frontend. (https://bulma.io/)-->
+<!--Se usaron templates de Bulma para este frontend. (https://bulma.io/)-->
 <html>
     <head>
         <title>CS Marketplace</title>
@@ -21,18 +21,6 @@
                         <a class="navbar-item" href="index.html">
                         CS Marketplace
                         </a>
-            
-                        <a class="navbar-item" href="users.html">
-                        Perfil
-                        </a>
-
-                        <a class="navbar-item" href="skins.html">
-                            Skins
-                        </a>
-
-                        <a class="navbar-item" href="cajas.html">
-                        Cajas
-                        </a>
                     </div>
             
                     <div class="navbar-end">
@@ -51,11 +39,32 @@
             </nav>
             <section class="section is-medium">
                 <nav class="level">
-                    <div class="level-item has-text-centered">
-                    <div>
-                        <figure class="image is-128x128">
-                            <img src="https://liquipedia.net/commons/images/thumb/9/9b/9z_Team_2024_darkmode.png/714px-9z_Team_2024_darkmode.png" />
-                        </figure>
+                    <div class="container is-max-desktop">
+                        <form class="box">
+                            <div class="field">
+                                <label class="label">Nombre de Usuario</label>
+                                <div class="control">
+                                    <input class="input" type="text">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label class="label">E-mail</label>
+                                <div class="control">
+                                    <input class="input" type="email">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label class="label">Contraseña</label>
+                                <div class="control">
+                                    <input class="input" type="password">
+                                </div>
+                            </div>
+                            <div class="field is-grouped is-grouped-centered">
+                                <p class="control">
+                                    <button class="button is-fullwidth is-light">Crear</button>
+                                </p>
+                            </div>
+                        </form>
                     </div>
                 </nav>
             </section>
