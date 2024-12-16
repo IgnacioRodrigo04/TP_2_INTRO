@@ -169,7 +169,8 @@ app.post('/api/v1/skins', (req, res) =>{
         imagen_url: req.body.imagen_url
     }
 
-    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen_url === undefined || !validar_numero(nuevo.precio_mercado) || nuevo.precio_mercado <= 0){
+    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen_url === undefined || !validar_numero(nuevo.precio_mercado) || 
+    nuevo.precio_mercado <= 0 || validar_numero(nuevo.rareza) || validar_numero(nuevo.tipo)){
         res.sendStatus(400)
         return;
     }
@@ -181,7 +182,7 @@ app.post('/api/v1/skins', (req, res) =>{
 
 
 app.delete('/api/v1/skins/:id', (req, res) => {
-    if(!validar_numero(req.params.id)){
+    if(!validar_numero(req.params.id) ){
         res.sendStatus(400)
         return;
     }
@@ -210,7 +211,8 @@ app.put('/api/v1/skins/:id' , (req, res) =>{
 
     nuevo = skins[editar_indice]
     
-    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen_url === undefined ||!validar_numero(nuevo.precio_mercado) || nuevo.precio_mercado <= 0){
+    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen_url === undefined 
+    ||!validar_numero(nuevo.precio_mercado) || nuevo.precio_mercado <= 0 || validar_numero(nuevo.rareza) || validar_numero(nuevo.tipo) || validar_numero(nuevo.imagen_url)){
         res.sendStatus(400)
         return;
     }
