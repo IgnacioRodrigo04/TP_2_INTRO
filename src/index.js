@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 
 app.get('/api/v1/usuarios',  async (req, res) => {    
     const conexion = await getConecction()
-    conexion.request().query('SELECT * FROM usuarios')
+    conexion.request().query("SELECT * FROM usuarios")
     res.json(usuarios)
 })
 
@@ -31,17 +31,21 @@ function validar_numero(numero) {
     return true;
 }
 
-app.get('/api/v1/usuarios/:id', (req, res) => {
+app.get('/api/v1/usuarios/:id', async (req, res) => {
     if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
-    const usuario = usuarios.find((element) => element.id == req.params.id)
-    if(usuario === undefined){
+    const conexion = await getConecction()
+    const usuario = await conexion.request()
+    .input('id', sql.Int, req.params.id)
+    .query("SElECT * FROM usuarios WHERE id = @id")
+    
+    if(usuario.rowsAffected[0] === 0){
         res.sendStatus(404)
         return
     }
-    res.json(usuario)   
+    res.json(usuario.recordset[0])   
 })
 
 function validar_mail(mail) {
@@ -61,7 +65,7 @@ app.post('/api/v1/usuarios', async (req, res) => {
         res.sendStatus(400)
         return
     }
-    
+
     const conexion =  await getConecction()
     const resultado = conexion.request()
         .input('nombre', sql.VarChar, nuevo.nombre)
@@ -69,7 +73,7 @@ app.post('/api/v1/usuarios', async (req, res) => {
         .input('mail', sql.VarChar, nuevo.mail)
         .input('contraseña', sql.VarChar, nuevo.contraseña)
         .input('skins_compradas', sql.VarChar, nuevo.skins_compradas.join(','))
-        .query('INSERT INTO usuarios (id, nombre, balance, mail, contraseña, skins_compradas) VALUES (@id, @nombre, @balance, @mail, @contraseña, @skins_compradas)')
+        .query("INSERT INTO usuarios (id, nombre, balance, mail, contraseña, skins_compradas) VALUES (@id, @nombre, @balance, @mail, @contraseña, @skins_compradas)")
     res.send(nuevo).status(201)
 })
 
