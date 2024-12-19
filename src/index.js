@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+import { getConecction } from './database'
+
 app.use(express.json())
 
 let usuarios = []
@@ -14,7 +16,9 @@ app.get('/', (req, res) => {
   res.send('Skins CS')
 })
 
-app.get('/api/v1/usuarios', (req, res) => {    
+app.get('/api/v1/usuarios',  async (req, res) => {    
+    const conexion = await getConecction()
+    conexion.request().query("SELECT * FROM usuarios")
     res.json(usuarios)
 })
 
