@@ -159,9 +159,8 @@ app.get('/api/v1/skins/:id' , async (req, res) => {
     res.status(200).json(resultado.recordset[0])  
 })
 
-app.post('/api/v1/skins', (req, res) =>{
+app.post('/api/v1/skins', async (req, res) =>{
     const nuevo = {
-        id: skins.length+1,
         nombre: req.body.nombre,
         rareza: req.body.rareza,
         tipo: req.body.tipo,
@@ -174,8 +173,15 @@ app.post('/api/v1/skins', (req, res) =>{
         res.sendStatus(400)
         return;
     }
-
-    skins.push(nuevo)
+   
+    const conexion =  await getConecction()
+    const resultado = await conexion.request()
+        .input('nombre', sql.VarChar, nuevo.nombre)
+        .input('rareza', sql.VarChar, nuevo.rareza)
+        .input('tipo', sql.VarChar, nuevo.tipo)
+        .input('precio_mercado', sql.Int, nuevo.precio_mercado)
+        .input('imagen_url', sql.VarChar, nuevo.imagen_url)
+        .query('INSERT INTO usuarios (nombre, rareza, tipo, precio_mercado, imagen_url)(@nombre, @rareza, @tipo, @precio_mercado, @imagen_url)');
     res.sendStatus(201)
 
 })
