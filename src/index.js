@@ -225,9 +225,9 @@ app.put('/api/v1/skins/:id' , async (req, res) =>{
     const editado = await conexion.request()
     .input("id", sql.Int, req.params.id)
     .input("nombre", sql.VarChar, req.body.nombre)
-    .input("tipo", sql.Int, req.body.tipo)
+    .input("tipo", sql.Varchar, req.body.tipo)
     .input("rareza", sql.VarChar, req.body.rareza)
-    .input("precio_mercado", sql.VarChar, req.body.precio_mercado)
+    .input("precio_mercado", sql.Int, req.body.precio_mercado)
     .input('imagen_url', sql.VarChar, req.body.imagen_url)
 
     .query('UPDATE Skin SET nombre = @nombre, tipo = @tipo, rareza = @rareza, precio_mercado = @precio_mercado, imagen_url = @imagen_url WHERE id = @id')
@@ -289,7 +289,7 @@ app.post('/api/v1/cajas', async (req, res) =>{
         .input('nombre', sql.VarChar, nuevo.nombre)
         .input('precio', sql.Int, nuevo.precio)
         .input('tipo', sql.VarChar, nuevo.tipo)
-        .input('imagen_url', sql.Int, nuevo.imagen_url)
+        .input('imagen_url', sql.Varchar, nuevo.imagen_url)
         .input('posibles_skins', sql.VarChar, nuevo.posibles_skins.join(','))
         .query('INSERT INTO Caja (nombre, precio, tipo, imagen_url, posibles_skins)(@nombre, @precio, @tipo, @imagen_url, @posibles_skins)');
     
@@ -318,35 +318,40 @@ app.delete('/api/v1/cajas/:id', async (req, res) => {
     res.status(200).send(caja.recordset[0])
 })
 
-app.put('/api/v1/cajas/:id' , (req, res) =>{
-    let editar_indice = cajas.findIndex((element) => element.id == req.params.id)
-    if(editar_indice === -1){
-        res.sendStatus(404)
-        return
-    }
-    cajas[editar_indice].nombre = req.body.nombre ?? cajas[editar_indice].nombre
-    cajas[editar_indice].tipo = req.body.tipo ?? cajas[editar_indice].tipo
-    cajas[editar_indice].precio = req.body.precio ?? cajas[editar_indice].precio
-    cajas[editar_indice].imagen_url = req.body.imagen_url ?? cajas[editar_indice].imagen_url
-    cajas[editar_indice].posibles_skins = req.body.posibles_skins ?? cajas[editar_indice].posibles_skins
+app.put('/api/v1/cajas/:id' , async (req, res) =>{
 
-    nuevo = cajas[editar_indice]
-    
-    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.precio === undefined || nuevo.imagen_url === undefined || 
-        nuevo.posibles_skins === undefined || !Array.isArray(nuevo.posibles_skins) || nuevo.posibles_skins.length === 0
-        || !validar_numero(nuevo.precio) || nuevo.precio <= 0){
+    if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
+    const  { nombre, tipo,  precio, imagen_url, posibles_skins} = req.body;
+    if(validar_numero(nombre) || precio < 0 || !validar_numero(precio) || validar_numero(imagen_url) 
+        || nombre === undefined || tipo === undefined ||imagen_url === undefined|| validar_numero(tipo) || !Array.isArray(posibles_skins) || posibles_skins.length === 0){ 
+        res.sendStatus(400)
+        return;
+    }
+    
+    const conexion = await getConecction()
+    const editado = await conexion.request()
+    .input("id", sql.Int, req.params.id)
+    .input("nombre", sql.VarChar, req.body.nombre)
+    .input("tipo", sql.VarChar, req.body.tipo)
+    .input("precio", sql.Int, req.body.precio)
+    .input("imagen_url", sql.VarChar, req.body.imagen_url)
+    .input('posibles_skins', sql.VarChar, req.body.posibles_skins.join(','))
 
-    for(let i=0; i < nuevo.posibles_skins.length; i++){
-        if(!validar_numero(nuevo.posibles_skins[i])){
-            res.sendStatus(400)
-            return;
-        }
+    .query('UPDATE Skin SET nombre = @nombre, tipo = @tipo, precio = @precio, imagen_url = @imagen_url, posibles_skins = @posibles_skins WHERE id = @id')
+   
+    if(editado.rowsAffected[0] === 0){
+        res.sendStatus(404)
+        return
     }
 
-    res.send(cajas[editar_indice]).status(200)
+    const caja_actualizada = await conexion.request()
+    .input("id", sql.Int, req.params.id)
+    .query("SELECT * FROM Caja WHERE id = @id");
+
+    res.status(200).send(caja_actualizada.recordset[0]);
 })
 
 app.listen(port, () => {
