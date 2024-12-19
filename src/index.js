@@ -74,7 +74,7 @@ app.post('/api/v1/usuarios', async (req, res) => {
         .input('contraseña', sql.VarChar, nuevo.contraseña)
         .input('skins_compradas', sql.VarChar, nuevo.skins_compradas.join(','))
         .query("INSERT INTO usuarios (id, nombre, balance, mail, contraseña, skins_compradas) VALUES (@id, @nombre, @balance, @mail, @contraseña, @skins_compradas)")
-    res.send(nuevo).status(201)
+    res.status(201).send(resultado)
 })
 
 app.delete('/api/v1/usuarios/:id', async (req, res) => {
@@ -91,32 +91,23 @@ app.delete('/api/v1/usuarios/:id', async (req, res) => {
         res.sendStatus(404)
         return
     }
-    res.send(eliminar.recordset[0]).status(200)
+    res.status(200).send(eliminar.recordset[0])
 })
 
 
-app.put('/api/v1/usuarios/:id' , (req, res) =>{
+app.put('/api/v1/usuarios/:id' , async (req, res) =>{
     if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
-    let editar_indice = usuarios.findIndex((element) => element.id == req.params.id)
-    if(editar_indice === -1){
-        res.sendStatus(404)
-        return
-    }
-    usuarios[editar_indice].nombre = req.body.nombre ?? usuarios[editar_indice].nombre
-    usuarios[editar_indice].balance = req.body.balance ?? usuarios[editar_indice].balance
-    usuarios[editar_indice].mail = req.body.mail ?? usuarios[editar_indice].mail
-    usuarios[editar_indice].contraseña = req.body.contraseña ?? usuarios[editar_indice].contraseña
-    usuarios[editar_indice].skins_compradas = req.body.skins_compradas ?? usuarios[editar_indice].skins_compradas
-
-    if(!validar_mail(usuarios[editar_indice].mail) || usuarios[editar_indice].balance < 0 || !validar_numero(usuarios[editar_indice].balance) || validar_numero(usuarios[editar_indice].contraseña)){ 
+    const validar = { nombre, balance, mail, contraseña, skins_compradas } = req.body;
+    if(!validar_mail(validar.mail) || validar.balance < 0 || !validar_numero(validar.balance) || validar_numero(validar.contraseña) 
+        || validar.nombre === undefined || validar.contraseña === undefined || validar.skins_compradas === undefined){ 
         res.sendStatus(400)
         return;
     }
     
-    let lista_skins = usuarios[editar_indice].skins_compradas
+    let lista_skins = validar.skins_compradas
     for(let i=0; i < lista_skins.length; i++){
         if(!validar_numero(lista_skins[i])){
             res.sendStatus(400)
@@ -124,7 +115,23 @@ app.put('/api/v1/usuarios/:id' , (req, res) =>{
         }
     }
 
-    res.send(usuarios[editar_indice]).status(200)
+    const conexion = await getConecction()
+    const editado = await conexion.request()
+    .input("id", sql.Int, req.params.id)
+    .input("nombre", sql.VarChar, req.body.nombre)
+    .input("balance", sql.Int, req.body.balance)
+    .input("mail", sql.VarChar, req.body.mail)
+    .input("contraseña", sql.VarChar, req.body.contraseña)
+    .input('skins_compradas', sql.VarChar, req.body.skins_compradas.join(','))
+
+    .query('UPDATE usuario SET nombre = @nombre, balance = @balance, mail = @mail, contraseña = @contraseña, skins_compradas = @skins_compradas WHERE id = @id')
+   
+    if(editado.rowsAffected[0] === 0){
+        res.sendStatus(404)
+        return
+    }
+
+    res.status(200).send(editado.recordset[0]);
 })
 
 
