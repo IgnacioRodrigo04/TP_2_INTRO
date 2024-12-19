@@ -105,21 +105,13 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
         res.sendStatus(400)
         return;
     }
-    const validar = { nombre, balance, mail, contraseña, skins_compradas } = req.body;
-    if(!validar_mail(validar.mail) || validar.balance < 0 || !validar_numero(validar.balance) || validar_numero(validar.contraseña) 
-        || validar.nombre === undefined || validar.contraseña === undefined || validar.skins_compradas === undefined){ 
+    const  { nombre, balance, mail, contraseña, skins_compradas } = req.body;
+    if(!validar_mail(mail) || balance < 0 || !validar_numero(balance) || validar_numero(contraseña) 
+        || nombre === undefined || contraseña === undefined || !Array.isArray(skins_compradas) || !skins_compradas.every(validar_numero)){ 
         res.sendStatus(400)
         return;
     }
     
-    let lista_skins = validar.skins_compradas
-    for(let i=0; i < lista_skins.length; i++){
-        if(!validar_numero(lista_skins[i])){
-            res.sendStatus(400)
-            return;
-        }
-    }
-
     const conexion = await getConecction()
     const editado = await conexion.request()
     .input("id", sql.Int, req.params.id)
@@ -136,7 +128,11 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
         return
     }
 
-    res.status(200).send(editado.recordset[0]);
+    const usuario_actualizado = await conexion.request()
+    .input("id", sql.Int, req.params.id)
+    .query("SELECT * FROM usuarios WHERE id = @id");
+
+    res.status(200).send(usuario_actualizado.recordset[0]);
 })
 
 
