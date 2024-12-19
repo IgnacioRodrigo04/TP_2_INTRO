@@ -106,25 +106,4 @@
             console.log('Usuario creado:', { nombre, email, password });
         }
     </script>
-
-    <script>
-        fetch('http://localhost:3000/api/v1/usuarios')
-            .then(response => response.json())
-            .then(users => {
-                console.log(users);
-                users.forEach(user => {
-                    let tr = document.createElement('tr');
-                    let name = document.createElement('td');
-                    name.textContent = user.name;
-                    let email = document.createElement('td');
-                    email.textContent = user.email;
-                    let plata = document.createElement('td');
-                    plata.textContent = user.money;
-                    tr.appendChild(name);
-                    tr.appendChild(email);
-                    tr.appendChild(plata);
-                    document.querySelector('table tbody').appendChild(tr);
-                });
-            });
-    </script>
 </html>
