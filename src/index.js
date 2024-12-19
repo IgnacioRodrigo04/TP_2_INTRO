@@ -187,20 +187,25 @@ app.post('/api/v1/skins', async (req, res) =>{
 })
 
 
-app.delete('/api/v1/skins/:id', (req, res) => {
-    if(!validar_numero(req.params.id) ){
+app.delete('/api/v1/skins/:id', async (req, res) => {
+    if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
+    const conexion = await getConecction()
+    const skin = await conexion.request()
+    .input("id", sql.Int, req.params.id)
+    .query("SELECT * FROM Skin WHERE id = @id");
 
-    const eliminar = skins.find((element) => element.id == req.params.id)
-    if(eliminar === undefined){
+    if(skin.recordset.length === 0){
         res.sendStatus(404)
         return
     }
+    await conexion.request()
+    .input("id", sql.Int, req.params.id)
+    .query("DELETE FROM Skin WHERE id = @id");
 
-    skins = skins.filter((element) => element.id != req.params.id)
-    res.send(eliminar).status(200)
+    res.status(200).send(skin.recordset[0])
 })
 
 app.put('/api/v1/skins/:id' , (req, res) =>{
