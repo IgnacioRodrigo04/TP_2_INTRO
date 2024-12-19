@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<!--Se usaron templates de Bulma para hacer este frontend. (https://bulma.io/)-->
+<html>
+    <head>
+        <title>CS Marketplace</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="My first HTML">
+        <meta name="keywords" content="HTML, CSS, JavaScript">
+        <meta name="author" content="Team 9Z">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    </head>
+    <body>
+        <div class="container is-fluid">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div id="navbarBasicExample" class="navbar-menu">
+                    <div class="navbar-start">
+                        <a class="navbar-item" href="index.html">CS Marketplace</a>
+                    </div>
+                    <div class="navbar-end">
+                        <div class="navbar-item">
+                            <div class="buttons">
+                                <a class="button is-primary" href="crear_usuario.html">
+                                    <strong>Sign up</strong>
+                                </a>
+                                <a class="button is-light" href="login_usuario.html">
+                                    Log in
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <section class="section is-medium">
+                <div class="container is-max-desktop">
+                    <form class="box">
+                        <div class="field">
+                            <label class="label">Nombre de Usuario</label>
+                            <div class="control">
+                                <input id="nombre" class="input" type="text" id="nombre" name="nombre">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">E-mail</label>
+                            <div class="control">
+                                <input id="email" class="input" type="email" id="email" name="email">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Contraseña</label>
+                            <div class="control">
+                                <input id="password" class="input" type="password" id="password" name="password">
+                            </div>
+                        </div>
+                        <div class="field is-grouped is-grouped-centered">
+                            <p class="control">
+                                <button class="button is-fullwidth is-light" type="button" onclick="createUser()">Crear</button>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Plata</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+    </body>
+
+    <script>
+        function createUser() {
+            const nombre = document.getElementById('nombre').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            let body = {
+                name: nombre,
+                mail: email,
+                contrasenia: password
+            };
+            
+            fetch("http://localhost:3000/api/v1/usuarios", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application.json'
+                },
+                body: JSON.stringify(body)
+            }) .then(response => {
+                if (response.status === 201) {
+                    alert('Usuario creado con exito');
+                    clearForm();
+                } else {
+                    alert('Error al crear usuario')
+                }
+            })
+            console.log('Usuario creado:', { nombre, email, password });
+        }
+    </script>
+
+    <script>
+        fetch('http://localhost:3000/api/v1/usuarios')
+            .then(response => response.json())
+            .then(users => {
+                console.log(users);
+                users.forEach(user => {
+                    let tr = document.createElement('tr');
+                    let name = document.createElement('td');
+                    name.textContent = user.name;
+                    let email = document.createElement('td');
+                    email.textContent = user.email;
+                    let plata = document.createElement('td');
+                    plata.textContent = user.money;
+                    tr.appendChild(name);
+                    tr.appendChild(email);
+                    tr.appendChild(plata);
+                    document.querySelector('table tbody').appendChild(tr);
+                });
+            });
+    </script>
+</html>

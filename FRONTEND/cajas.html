@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<!--Se usaron templates de Bulma para hacer este frontend. (https://bulma.io/)-->
+<html>
+    <head>
+        <title>CS Marketplace</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="My first HTML">
+        <meta name="keywords" content="HTML, CSS, JavaScript">
+        <meta name="author" content="Team 9Z">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    </head>
+    <body>
+        <div class="container is-fluid">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div id="navbarBasicExample" class="navbar-menu">
+                    <div class="navbar-start">
+                        <a class="navbar-item" href="index.html">CS Marketplace</a>
+                        <a class="navbar-item" href="users.html">Perfil</a>
+                        <a class="navbar-item" href="skins.html">Skins</a>
+                        <a class="navbar-item" href="cajas.html">Cajas</a>
+                    </div>
+                    <div class="navbar-end">
+                        <div class="navbar-item">
+                            <div class="buttons">
+                                <a class="button is-primary" href="crear_usuario.html"><strong>Sign up</strong></a>
+                                <a class="button is-light" href="login_usuario.html">Log in</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            
+            <table class="table is-fullwidth">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Nombre</th>                                                 
+                        <th>Contenido</th>
+                        <th>Fecha de Lanzamiento</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+            fetch('http://localhost:3000/api/v1/cajas')
+                .then(response => response.json())
+                .then(cajas => {
+                    const tableBody = document.querySelector("tbody");
+
+                    cajas.forEach(caja => {
+                        let tr = document.createElement('tr');
+                        let imgCell = document.createElement('td');
+                        let figure = document.createElement('figure');
+                        figure.classList.add("image", "is-128x128");
+                        let img = document.createElement('img');
+                        img.src = caja.imagen_url;
+                        figure.appendChild(img);
+                        imgCell.appendChild(figure);
+
+                        let nameCell = document.createElement('td');
+                        nameCell.textContent = caja.nombre;
+
+                        let viewButtonCell = document.createElement('td');
+                        let viewButton = document.createElement('button');
+                        viewButton.classList.add("button", "is-rounded");
+                        viewButton.textContent = "Ver";
+                        viewButton.addEventListener('click', () => {
+                            alert(`Contenido de la caja: ${caja.contenido}`);
+                        });
+                        viewButtonCell.appendChild(viewButton);
+
+                        let releaseDateCell = document.createElement('td');
+                        releaseDateCell.textContent = caja.fecha_lanzamiento;
+
+                        let priceCell = document.createElement('td');
+                        priceCell.textContent = `$${caja.precio}`;
+
+                        let buyButtonCell = document.createElement('td');
+                        let buyButton = document.createElement('button');
+                        buyButton.classList.add("button", "is-focused");
+                        buyButton.textContent = "Comprar";
+                        buyButton.addEventListener('click', () => {
+                            alert(`Has comprado la caja "${caja.nombre}" por $${caja.precio}`);
+                        });
+                        buyButtonCell.appendChild(buyButton);
+
+                        tr.appendChild(imgCell);
+                        tr.appendChild(nameCell);
+                        tr.appendChild(viewButtonCell);
+                        tr.appendChild(releaseDateCell);
+                        tr.appendChild(priceCell);
+                        tr.appendChild(buyButtonCell);
+
+                        tableBody.appendChild(tr);
+                    });
+                })
+                .catch(error => console.error("Error al obtener los datos:", error));
+        </script>
+    </body>
+</html>
