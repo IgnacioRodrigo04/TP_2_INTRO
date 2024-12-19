@@ -245,8 +245,10 @@ app.put('/api/v1/skins/:id' , async (req, res) =>{
 })
 
 
-app.get('/api/v1/cajas/', (req, res)=>{
-    res.json(cajas)
+app.get('/api/v1/cajas/', async (req, res)=>{
+    const conexion = await getConecction()
+    const resultado = await conexion.request().query("SELECT * FROM Caja")
+    res.json(resultado.recordset)
 })
 
 
