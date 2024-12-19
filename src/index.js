@@ -84,15 +84,19 @@ app.delete('/api/v1/usuarios/:id', async (req, res) => {
         return;
     }
     const conexion = await getConecction()
-    const eliminar = await conexion.request()
+    const usuario = await conexion.request()
     .input("id", sql.Int, req.params.id)
-    .query("DELETE FROM usuarios WHERE id = @id");
+    .query("SELECT * FROM usuarios WHERE id = @id");
 
-     if(eliminar.rowsAffected[0] === 0){
+    if(usuario.recordset.length === 0){
         res.sendStatus(404)
         return
     }
-    res.status(200).send(eliminar.recordset[0])
+    await conexion.request()
+    .input("id", sql.Int, req.params.id)
+    .query("DELETE FROM usuarios WHERE id = @id");
+
+    res.status(200).send(usuario.recordset[0])
 })
 
 
