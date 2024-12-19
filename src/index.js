@@ -3,6 +3,7 @@ const app = express()
 const port = 3000
 
 import { getConecction } from './database'
+import sql from 'mssql'
 
 app.use(express.json())
 
@@ -18,7 +19,7 @@ app.get('/', (req, res) => {
 
 app.get('/api/v1/usuarios',  async (req, res) => {    
     const conexion = await getConecction()
-    conexion.request().query("SELECT * FROM usuarios")
+    conexion.request().query('SELECT * FROM usuarios')
     res.json(usuarios)
 })
 
@@ -48,22 +49,28 @@ function validar_mail(mail) {
     return regex.test(mail);
 }
 
-app.post('/api/v1/usuarios', (req, res) => {
+app.post('/api/v1/usuarios', async (req, res) => {
     const nuevo = {
-        id: usuarios.length+1,
         nombre: req.body.nombre,
         balance: req.body.balance ?? 0,
         mail: req.body.mail,
         contraseña: req.body.contraseña,
         skins_compradas: []
     }
-
     if(nuevo.nombre === undefined || nuevo.contraseña === undefined || !validar_mail(nuevo.mail) || !validar_numero(nuevo.balance) || nuevo.balance < 0 || validar_numero(nuevo.nombre)){
         res.sendStatus(400)
         return
     }
-    usuarios.push(nuevo)
-    res.sendStatus(201)
+    
+    const conexion =  await getConecction()
+    const resultado = conexion.request()
+        .input('nombre', sql.VarChar, nuevo.nombre)
+        .input('balance', sql.Int, nuevo.balance)
+        .input('mail', sql.VarChar, nuevo.mail)
+        .input('contraseña', sql.VarChar, nuevo.contraseña)
+        .input('skins_compradas', sql.VarChar, nuevo.skins_compradas.join(','))
+        .query('INSERT INTO usuarios (id, nombre, balance, mail, contraseña, skins_compradas) VALUES (@id, @nombre, @balance, @mail, @contraseña, @skins_compradas)')
+    res.send(nuevo).status(201)
 })
 
 app.delete('/api/v1/usuarios/:id', (req, res) => {
