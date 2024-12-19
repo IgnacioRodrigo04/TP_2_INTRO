@@ -181,7 +181,7 @@ app.post('/api/v1/skins', async (req, res) =>{
         .input('tipo', sql.VarChar, nuevo.tipo)
         .input('precio_mercado', sql.Int, nuevo.precio_mercado)
         .input('imagen_url', sql.VarChar, nuevo.imagen_url)
-        .query('INSERT INTO usuarios (nombre, rareza, tipo, precio_mercado, imagen_url)(@nombre, @rareza, @tipo, @precio_mercado, @imagen_url)');
+        .query('INSERT INTO Skin (nombre, rareza, tipo, precio_mercado, imagen_url)(@nombre, @rareza, @tipo, @precio_mercado, @imagen_url)');
     res.sendStatus(201)
 
 })
@@ -269,23 +269,30 @@ app.get('/api/v1/cajas/:id' , async (req, res) => {
     res.status(200).json(resultado.recordset[0])  
 })
 
-app.post('/api/v1/cajas', (req, res) =>{
+app.post('/api/v1/cajas', async (req, res) =>{
     const nuevo = {
-        id: cajas.length+1,
         nombre: req.body.nombre,
-        precio: req.body.precio,
+        precio: req.body.precio ?? 1,
         tipo: req.body.tipo,
         imagen_url: req.body.imagen_url,
         posibles_skins: req.body.posibles_skins
-    }
 
+    }
     if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.precio === undefined || nuevo.imagen_url === undefined || !Array.isArray(nuevo.posibles_skins) || 
     nuevo.posibles_skins.length === 0 ||!validar_numero(nuevo.precio) || nuevo.precio <= 0){
         res.sendStatus(400)
         return;
     }
-
-    cajas.push(nuevo)
+   
+    const conexion =  await getConecction()
+    const resultado = await conexion.request()
+        .input('nombre', sql.VarChar, nuevo.nombre)
+        .input('precio', sql.Int, nuevo.precio)
+        .input('tipo', sql.VarChar, nuevo.tipo)
+        .input('imagen_url', sql.Int, nuevo.imagen_url)
+        .input('posibles_skins', sql.VarChar, nuevo.posibles_skins.join(','))
+        .query('INSERT INTO Caja (nombre, precio, tipo, imagen_url, posibles_skins)(@nombre, @precio, @tipo, @imagen_url, @posibles_skins)');
+    
     res.sendStatus(201)
 
 })
