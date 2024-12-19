@@ -252,18 +252,21 @@ app.get('/api/v1/cajas/', async (req, res)=>{
 })
 
 
-app.get('/api/v1/cajas/:id' , (req, res) => {
+app.get('/api/v1/cajas/:id' , async (req, res) => {
     if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
-
-    const caja = cajas.find((element) => element.id == req.params.id)
-    if(caja === undefined){
+    const conexion = await getConecction()
+    const resultado = await conexion.request()
+    .input('id', sql.Int, req.params.id)
+    .query("SElECT * FROM Caja WHERE id = @id")
+    
+    if(resultado.recordset.length === 0){
         res.sendStatus(404)
         return
     }
-    res.json(caja) 
+    res.status(200).json(resultado.recordset[0])  
 })
 
 app.post('/api/v1/cajas', (req, res) =>{
