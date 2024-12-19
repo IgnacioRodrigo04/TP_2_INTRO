@@ -2,23 +2,18 @@ const express = require('express')
 const app = express()
 const port = 3000
 
-import { getConecction } from './database'
+import { getConnection } from './database'
 import sql from 'mssql'
 
 app.use(express.json())
 
-let usuarios = []
-
-let skins = []
-
-let cajas = []
 
 app.get('/', (req, res) => {
   res.send('Skins CS')
 })
 
 app.get('/api/v1/usuarios',  async (req, res) => {    
-    const conexion = await getConecction()
+    const conexion = await getConnection()
     const resultado = await conexion.request().query("SELECT * FROM Usuarios")
     res.json(resultado.recordset)
 })
@@ -36,7 +31,7 @@ app.get('/api/v1/usuarios/:id', async (req, res) => {
         res.sendStatus(400)
         return;
     }
-    const conexion = await getConecction()
+    const conexion = await getConnection()
     const resultado = await conexion.request()
     .input('id', sql.Int, req.params.id)
     .query("SElECT * FROM Usuarios WHERE id = @id")
@@ -67,7 +62,7 @@ app.post('/api/v1/usuarios', async (req, res) => {
         return
     }
 
-    const conexion =  await getConecction()
+    const conexion =  await getConnection()
     const resultado = await conexion.request()
         .input('nombre', sql.VarChar, nuevo.nombre)
         .input('balance', sql.Int, nuevo.balance)
@@ -83,7 +78,7 @@ app.delete('/api/v1/usuarios/:id', async (req, res) => {
         res.sendStatus(400)
         return;
     }
-    const conexion = await getConecction()
+    const conexion = await getConnection()
     const usuario = await conexion.request()
     .input("id", sql.Int, req.params.id)
     .query("SELECT * FROM Usuarios WHERE id = @id");
@@ -112,7 +107,7 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
         return;
     }
     
-    const conexion = await getConecction()
+    const conexion = await getConnection()
     const editado = await conexion.request()
     .input("id", sql.Int, req.params.id)
     .input("nombre", sql.VarChar, req.body.nombre)
@@ -137,7 +132,7 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
 
 
 app.get('/api/v1/skins', async (req, res) =>{
-    const conexion = await getConecction()
+    const conexion = await getConnection()
     const resultado = await conexion.request().query("SELECT * FROM Skin")
     res.json(resultado.recordset)
 })
@@ -147,7 +142,7 @@ app.get('/api/v1/skins/:id' , async (req, res) => {
         res.sendStatus(400)
         return;
     }
-    const conexion = await getConecction()
+    const conexion = await getConnection()
     const resultado = await conexion.request()
     .input('id', sql.Int, req.params.id)
     .query("SElECT * FROM Skin WHERE id = @id")
@@ -174,7 +169,7 @@ app.post('/api/v1/skins', async (req, res) =>{
         return;
     }
    
-    const conexion =  await getConecction()
+    const conexion =  await getConnection()
     const resultado = await conexion.request()
         .input('nombre', sql.VarChar, nuevo.nombre)
         .input('rareza', sql.VarChar, nuevo.rareza)
@@ -192,7 +187,7 @@ app.delete('/api/v1/skins/:id', async (req, res) => {
         res.sendStatus(400)
         return;
     }
-    const conexion = await getConecction()
+    const conexion = await getConnection()
     const skin = await conexion.request()
     .input("id", sql.Int, req.params.id)
     .query("SELECT * FROM Skin WHERE id = @id");
@@ -221,7 +216,7 @@ app.put('/api/v1/skins/:id' , async (req, res) =>{
         return;
     }
     
-    const conexion = await getConecction()
+    const conexion = await getConnection()
     const editado = await conexion.request()
     .input("id", sql.Int, req.params.id)
     .input("nombre", sql.VarChar, req.body.nombre)
@@ -246,7 +241,7 @@ app.put('/api/v1/skins/:id' , async (req, res) =>{
 
 
 app.get('/api/v1/cajas/', async (req, res)=>{
-    const conexion = await getConecction()
+    const conexion = await getConnection()
     const resultado = await conexion.request().query("SELECT * FROM Caja")
     res.json(resultado.recordset)
 })
@@ -257,7 +252,7 @@ app.get('/api/v1/cajas/:id' , async (req, res) => {
         res.sendStatus(400)
         return;
     }
-    const conexion = await getConecction()
+    const conexion = await getConnection()
     const resultado = await conexion.request()
     .input('id', sql.Int, req.params.id)
     .query("SElECT * FROM Caja WHERE id = @id")
@@ -284,7 +279,7 @@ app.post('/api/v1/cajas', async (req, res) =>{
         return;
     }
    
-    const conexion =  await getConecction()
+    const conexion =  await getConnection()
     const resultado = await conexion.request()
         .input('nombre', sql.VarChar, nuevo.nombre)
         .input('precio', sql.Int, nuevo.precio)
@@ -302,7 +297,7 @@ app.delete('/api/v1/cajas/:id', async (req, res) => {
         res.sendStatus(400)
         return;
     }
-    const conexion = await getConecction()
+    const conexion = await getConnection()
     const caja = await conexion.request()
     .input("id", sql.Int, req.params.id)
     .query("SELECT * FROM Caja WHERE id = @id");
@@ -331,7 +326,7 @@ app.put('/api/v1/cajas/:id' , async (req, res) =>{
         return;
     }
     
-    const conexion = await getConecction()
+    const conexion = await getConnection()
     const editado = await conexion.request()
     .input("id", sql.Int, req.params.id)
     .input("nombre", sql.VarChar, req.body.nombre)

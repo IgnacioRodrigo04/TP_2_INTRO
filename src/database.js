@@ -1,14 +1,14 @@
 import sql from 'mssql'
 
 const dbSettings = {
-    user: "",
-    password: "",
-    server: "", 
-    database: "", 
+    user: "sa",
+    password: "yourStrong(!)Password",
+    server: "localhost", 
+    database: "MIDB", 
     options:{
         encrypt: false,
         trustServerCertifitcate: true,
     }
 }
 
-export const getConecction = async () => await sql.connect(dbSettings)
+export const getConnection = async () => await sql.connect(dbSettings)
