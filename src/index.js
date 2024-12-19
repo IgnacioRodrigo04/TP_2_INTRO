@@ -1,9 +1,19 @@
-const express = require('express')
-const app = express()
-const port = 3000
 
-import { getConnection } from './database'
+import { getConnection } from './database.js'
 import sql from 'mssql'
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+import express from 'express';
+
+const app = express();
+
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`Servidor corriendo en el puerto ${port}`);
+});
 
 app.use(express.json())
 
@@ -347,8 +357,4 @@ app.put('/api/v1/cajas/:id' , async (req, res) =>{
     .query("SELECT * FROM Caja WHERE id = @id");
 
     res.status(200).send(caja_actualizada.recordset[0]);
-})
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
 })
