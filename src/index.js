@@ -37,15 +37,15 @@ app.get('/api/v1/usuarios/:id', async (req, res) => {
         return;
     }
     const conexion = await getConecction()
-    const usuario = await conexion.request()
+    const resultado = await conexion.request()
     .input('id', sql.Int, req.params.id)
     .query("SElECT * FROM usuarios WHERE id = @id")
     
-    if(usuario.rowsAffected[0] === 0){
+    if(resultado.recordset.length === 0){
         res.sendStatus(404)
         return
     }
-    res.json(usuario.recordset[0])   
+    res.status(200).json(resultado.recordset[0])   
 })
 
 function validar_mail(mail) {
