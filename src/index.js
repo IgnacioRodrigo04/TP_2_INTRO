@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 
 app.get('/api/v1/usuarios',  async (req, res) => {    
     const conexion = await getConecction()
-    const resultado = await conexion.request().query("SELECT * FROM usuarios")
+    const resultado = await conexion.request().query("SELECT * FROM Usuarios")
     res.json(resultado.recordset)
 })
 
@@ -39,7 +39,7 @@ app.get('/api/v1/usuarios/:id', async (req, res) => {
     const conexion = await getConecction()
     const resultado = await conexion.request()
     .input('id', sql.Int, req.params.id)
-    .query("SElECT * FROM usuarios WHERE id = @id")
+    .query("SElECT * FROM Usuarios WHERE id = @id")
     
     if(resultado.recordset.length === 0){
         res.sendStatus(404)
@@ -86,7 +86,7 @@ app.delete('/api/v1/usuarios/:id', async (req, res) => {
     const conexion = await getConecction()
     const usuario = await conexion.request()
     .input("id", sql.Int, req.params.id)
-    .query("SELECT * FROM usuarios WHERE id = @id");
+    .query("SELECT * FROM Usuarios WHERE id = @id");
 
     if(usuario.recordset.length === 0){
         res.sendStatus(404)
@@ -94,7 +94,7 @@ app.delete('/api/v1/usuarios/:id', async (req, res) => {
     }
     await conexion.request()
     .input("id", sql.Int, req.params.id)
-    .query("DELETE FROM usuarios WHERE id = @id");
+    .query("DELETE FROM Usuarios WHERE id = @id");
 
     res.status(200).send(usuario.recordset[0])
 })
@@ -130,14 +130,16 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
 
     const usuario_actualizado = await conexion.request()
     .input("id", sql.Int, req.params.id)
-    .query("SELECT * FROM usuarios WHERE id = @id");
+    .query("SELECT * FROM Usuarios WHERE id = @id");
 
     res.status(200).send(usuario_actualizado.recordset[0]);
 })
 
 
-app.get('/api/v1/skins', (req, res) =>{
-    res.json(skins)
+app.get('/api/v1/skins', async (req, res) =>{
+    const conexion = await getConecction()
+    const resultado = await conexion.request().query("SELECT * FROM Skin")
+    res.json(resultado.recordset)
 })
 
 app.get('/api/v1/skins/:id' , (req, res) => {
