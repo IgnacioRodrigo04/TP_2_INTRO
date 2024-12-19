@@ -61,20 +61,21 @@ app.post('/api/v1/usuarios', async (req, res) => {
         contraseña: req.body.contraseña,
         skins_compradas: []
     }
-    if(nuevo.nombre === undefined || nuevo.contraseña === undefined || !validar_mail(nuevo.mail) || !validar_numero(nuevo.balance) || nuevo.balance < 0 || validar_numero(nuevo.nombre)){
+    if(nuevo.nombre === undefined || nuevo.contraseña === undefined || !validar_mail(nuevo.mail) || !validar_numero(nuevo.balance) || nuevo.balance < 0 || validar_numero(nuevo.nombre)
+    ||  !Array.isArray(nuevo.skins_compradas) || !nuevo.skins_compradas.every(validar_numero)){
         res.sendStatus(400)
         return
     }
 
     const conexion =  await getConecction()
-    const resultado = conexion.request()
+    const resultado = await conexion.request()
         .input('nombre', sql.VarChar, nuevo.nombre)
         .input('balance', sql.Int, nuevo.balance)
         .input('mail', sql.VarChar, nuevo.mail)
         .input('contraseña', sql.VarChar, nuevo.contraseña)
         .input('skins_compradas', sql.VarChar, nuevo.skins_compradas.join(','))
-        .query("INSERT INTO usuarios (id, nombre, balance, mail, contraseña, skins_compradas) VALUES (@id, @nombre, @balance, @mail, @contraseña, @skins_compradas)")
-    res.status(201).send(resultado)
+        .query(' INSERT INTO usuarios (nombre, balance, mail, contraseña, skins_compradas)(@nombre, @balance, @mail, @contraseña, @skins_compradas)');
+    res.sendStatus(201)
 })
 
 app.delete('/api/v1/usuarios/:id', async (req, res) => {
