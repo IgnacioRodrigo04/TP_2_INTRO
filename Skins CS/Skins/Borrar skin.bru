@@ -1,0 +1,24 @@
+meta {
+  name: Borrar skin
+  type: http
+  seq: 4
+}
+
+delete {
+  url: http://localhost:3000/api/v1/skins/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 
+}
+
+body:json {
+  {
+    "nombre": "sopotrapo",
+    "tipo": "metralleta",
+    "rareza": "legendaria",
+    "imagen_url": 2
+  }
+}

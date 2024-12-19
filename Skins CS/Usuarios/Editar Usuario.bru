@@ -1,0 +1,23 @@
+meta {
+  name: Editar Usuario
+  type: http
+  seq: 5
+}
+
+put {
+  url: http://localhost:3000/api/v1/usuarios/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 1
+}
+
+body:json {
+   {
+     "skins_compradas": ["23"]
+  
+   }
+  
+}

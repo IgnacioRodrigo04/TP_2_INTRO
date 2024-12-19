@@ -1,0 +1,25 @@
+meta {
+  name: Editar Cajas
+  type: http
+  seq: 5
+}
+
+put {
+  url: http://localhost:3000/api/v1/cajas/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 2
+}
+
+body:json {
+  {
+    "nombre": "pepito",
+    "tipo": "super epica",
+    "precio": 1000000,
+    "imagen_url": "susu",
+    "posibles_skins": ["1", "10", "200", "21"]
+  }
+}
