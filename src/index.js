@@ -19,8 +19,8 @@ app.get('/', (req, res) => {
 
 app.get('/api/v1/usuarios',  async (req, res) => {    
     const conexion = await getConecction()
-    conexion.request().query("SELECT * FROM usuarios")
-    res.json(usuarios)
+    const resultado = await conexion.request().query("SELECT * FROM usuarios")
+    res.json(resultado.recordset)
 })
 
 function validar_numero(numero) {
