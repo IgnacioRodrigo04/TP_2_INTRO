@@ -1,0 +1,13 @@
+services: 
+  db:
+    image: mysql:
+    container_name: skinscs_database
+  environment:
+    -MYSQL_USER=intro_tp2
+    -MYSQL_PASSWORD=contraseña_segura_tp2
+    -MYSQL_DATABASE=SkinsCs
+  ports:
+    -3306:3306 
+  volumes:
+    ./mysql_data:/var/lib/mysql
+    

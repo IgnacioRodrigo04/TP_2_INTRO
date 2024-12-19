@@ -4,40 +4,11 @@ const port = 3000
 
 app.use(express.json())
 
-let usuarios = [{
-    id: 1,
-    nombre: "nacho",
-    balance: 100,
-    mail: "hola@gmail.com",
-    contraseña: "sdkiedk1",
-    skins_compradas: []    
-}]
+let usuarios = []
 
-let skins = [{
-    id: 1,
-    nombre: "fuego epico",
-    rareza: "super epica",
-    tipo: "awp",
-    precio_mercado: 0,
-    imagen: undefined   
-},{
-    id: 2,
-    nombre: "sombra asesina",
-    rareza: "ultra epica",
-    tipo: "awp",
-    precio_mercado: 4,
-    imagen: undefined   
-}]
+let skins = []
 
-let cajas = [{
-    id: 1, 
-    nombre: "caja lolera",
-    precio: 10,
-    tipo: "epica",
-    imagen_url: undefined,
-    posibles_skins: []
-
-}]
+let cajas = []
 
 app.get('/', (req, res) => {
   res.send('Skins CS')
