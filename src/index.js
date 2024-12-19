@@ -142,18 +142,21 @@ app.get('/api/v1/skins', async (req, res) =>{
     res.json(resultado.recordset)
 })
 
-app.get('/api/v1/skins/:id' , (req, res) => {
+app.get('/api/v1/skins/:id' , async (req, res) => {
     if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
-
-    const skin = skins.find((element) => element.id == req.params.id)
-    if(skin === undefined){
+    const conexion = await getConecction()
+    const resultado = await conexion.request()
+    .input('id', sql.Int, req.params.id)
+    .query("SElECT * FROM Skin WHERE id = @id")
+    
+    if(resultado.recordset.length === 0){
         res.sendStatus(404)
         return
     }
-    res.json(skin) 
+    res.status(200).json(resultado.recordset[0])  
 })
 
 app.post('/api/v1/skins', (req, res) =>{
