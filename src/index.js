@@ -121,7 +121,7 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
     .input("contraseña", sql.VarChar, req.body.contraseña)
     .input('skins_compradas', sql.VarChar, req.body.skins_compradas.join(','))
 
-    .query('UPDATE usuario SET nombre = @nombre, balance = @balance, mail = @mail, contraseña = @contraseña, skins_compradas = @skins_compradas WHERE id = @id')
+    .query('UPDATE usuarios SET nombre = @nombre, balance = @balance, mail = @mail, contraseña = @contraseña, skins_compradas = @skins_compradas WHERE id = @id')
    
     if(editado.rowsAffected[0] === 0){
         res.sendStatus(404)
@@ -208,27 +208,40 @@ app.delete('/api/v1/skins/:id', async (req, res) => {
     res.status(200).send(skin.recordset[0])
 })
 
-app.put('/api/v1/skins/:id' , (req, res) =>{
-    let editar_indice = skins.findIndex((element) => element.id == req.params.id)
-    if(editar_indice === -1){
-        res.sendStatus(404)
-        return
-    }
-    skins[editar_indice].nombre = req.body.nombre ?? skins[editar_indice].nombre
-    skins[editar_indice].tipo = req.body.tipo ?? skins[editar_indice].tipo
-    skins[editar_indice].rareza = req.body.rareza ?? skins[editar_indice].rareza
-    skins[editar_indice].precio_mercado = req.body.precio_mercado ?? skins[editar_indice].precio_mercado
-    skins[editar_indice].imagen_url = req.body.imagen_url ?? skins[editar_indice].imagen_url
-
-    nuevo = skins[editar_indice]
+app.put('/api/v1/skins/:id' , async (req, res) =>{
     
-    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen_url === undefined 
-    ||!validar_numero(nuevo.precio_mercado) || nuevo.precio_mercado <= 0 || validar_numero(nuevo.rareza) || validar_numero(nuevo.tipo) || validar_numero(nuevo.imagen_url)){
+    if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
+    const  { nombre, tipo, rareza, precio_mercado, imagen_url } = req.body;
+    if(validar_numero(nombre) || precio_mercado < 0 || !validar_numero(precio_mercado) || validar_numero(imagen_url) 
+        || nombre === undefined || tipo === undefined || rareza === undefined|| validar_numero(tipo) || validar_numero(rareza)){ 
+        res.sendStatus(400)
+        return;
+    }
+    
+    const conexion = await getConecction()
+    const editado = await conexion.request()
+    .input("id", sql.Int, req.params.id)
+    .input("nombre", sql.VarChar, req.body.nombre)
+    .input("tipo", sql.Int, req.body.tipo)
+    .input("rareza", sql.VarChar, req.body.rareza)
+    .input("precio_mercado", sql.VarChar, req.body.precio_mercado)
+    .input('imagen_url', sql.VarChar, req.body.imagen_url)
 
-    res.send(skins[editar_indice]).status(200)
+    .query('UPDATE Skin SET nombre = @nombre, tipo = @tipo, rareza = @rareza, precio_mercado = @precio_mercado, imagen_url = @imagen_url WHERE id = @id')
+   
+    if(editado.rowsAffected[0] === 0){
+        res.sendStatus(404)
+        return
+    }
+
+    const skin_actualizada = await conexion.request()
+    .input("id", sql.Int, req.params.id)
+    .query("SELECT * FROM Skin WHERE id = @id");
+
+    res.status(200).send(skin_actualizada.recordset[0]);
 })
 
 
