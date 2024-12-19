@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--Se usaron templates de Bulma para este frontend. (https://bulma.io/)-->
+<!--Se usaron templates de Bulma para hacer este frontend. (https://bulma.io/)-->
 <html>
     <head>
         <title>CS Marketplace</title>
@@ -8,60 +8,82 @@
         <meta name="keywords" content="HTML, CSS, JavaScript">
         <meta name="author" content="Team 9Z">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     </head>
     <body>
         <div class="container is-fluid">
             <nav class="navbar" role="navigation" aria-label="main navigation">
-          
                 <div id="navbarBasicExample" class="navbar-menu">
                     <div class="navbar-start">
-                        <a class="navbar-item" href="index.html">
-                        CS Marketplace
-                        </a>
+                        <a class="navbar-item" href="index.html">CS Marketplace</a>
                     </div>
-            
                     <div class="navbar-end">
                         <div class="navbar-item">
                             <div class="buttons">
                                 <a class="button is-primary" href="crear_usuario.html">
-                                <strong>Sign up</strong>
+                                    <strong>Sign up</strong>
                                 </a>
                                 <a class="button is-light" href="login_usuario.html">
-                                Log in
+                                    Log in
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </nav>
+
             <section class="section is-medium">
-                <nav class="level">
-                    <div class="container is-max-desktop">
-                        <form class="box">
-                            <div class="field">
-                                <label class="label">Nombre de Usuario</label>
-                                <div class="control">
-                                    <input class="input" type="text">
-                                </div>
+                <div class="container is-max-desktop">
+                    <form class="box" onsubmit="return loginUser(event)">
+                        <div class="field">
+                            <label class="label">Nombre de Usuario</label>
+                            <div class="control">
+                                <input class="input" type="text" id="username" name="username" required>
                             </div>
-                            <div class="field">
-                                <label class="label">Contraseña</label>
-                                <div class="control">
-                                    <input class="input" type="password">
-                                </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Contraseña</label>
+                            <div class="control">
+                                <input class="input" type="password" id="password" name="password" required>
                             </div>
-                            <div class="field is-grouped is-grouped-centered">
-                                <p class="control">
-                                    <button class="button is-fullwidth is-light">Acceder</button>
-                                </p>
-                            </div>
-                        </form>
-                    </div>
-                </nav>
+                        </div>
+                        <div class="field is-grouped is-grouped-centered">
+                            <p class="control">
+                                <button class="button is-fullwidth is-light" type="submit">Acceder</button>
+                            </p>
+                        </div>
+                    </form>
+                </div>
             </section>
         </div>
+
+        <script>
+            function loginUser(event) {
+                event.preventDefault();
+            
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+            
+                if (username === '' || password === '') {
+                    alert('Por favor, complete todos los campos.');
+                    return false;
+                }
+            
+                fetch('http://localhost:3000/usuarios', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, password }),
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        localStorage.setItem('userToken', data.token); 
+                        window.location.href = 'index.html'; 
+                    } else {
+                        alert('Credenciales incorrectas.');
+                    }
+                });
+            }
+        </script>
     </body>
 </html>

@@ -8,42 +8,23 @@
         <meta name="keywords" content="HTML, CSS, JavaScript">
         <meta name="author" content="Team 9Z">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     </head>
     <body>
         <div class="container is-fluid">
             <nav class="navbar" role="navigation" aria-label="main navigation">
-          
                 <div id="navbarBasicExample" class="navbar-menu">
                     <div class="navbar-start">
-                        <a class="navbar-item" href="index.html">
-                        CS Marketplace
-                        </a>
-            
-                        <a class="navbar-item" href="users.html">
-                        Perfil
-                        </a>
-
-                        <a class="navbar-item" href="skins.html">
-                            Skins
-                        </a>
-
-                        <a class="navbar-item" href="cajas.html">
-                        Cajas
-                        </a>
+                        <a class="navbar-item" href="index.html">CS Marketplace</a>
+                        <a class="navbar-item" href="users.html">Perfil</a>
+                        <a class="navbar-item" href="skins.html">Skins</a>
+                        <a class="navbar-item" href="cajas.html">Cajas</a>
                     </div>
-            
                     <div class="navbar-end">
                         <div class="navbar-item">
                             <div class="buttons">
-                                <a class="button is-primary" href="crear_usuario.html">
-                                <strong>Sign up</strong>
-                                </a>
-                                <a class="button is-light" href="login_usuario.html">
-                                Log in
-                                </a>
+                                <a class="button is-primary" href="crear_usuario.html"><strong>Sign up</strong></a>
+                                <a class="button is-light" href="login_usuario.html">Log in</a>
                             </div>
                         </div>
                     </div>
@@ -51,43 +32,68 @@
             </nav>
             <table class="table is-fullwidth">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th>Nombre</th>                                                
-                    <th>Tipo</th>
-                    <th>Rareza</th>
-                    <th>Precio</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>
-                        <figure class="image is-128x128">
-                            <img src="https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/default_generated/weapon_deagle_hy_ddpat_urb_light_png.png" />
-                        </figure>
-                    </td>
-                    <td>Urban DDPAT</td>
-                    <td>Desert Eagle</td>
-                    <td>Industrial Grade</td>
-                    <td>$100</td>
-                    <td><button class="button is-focused">Comprar</button></td>
-                </tr>
-                </tbody>
-                <tbody>
                     <tr>
-                        <td>
-                            <figure class="image is-128x128">
-                                <img src="https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/default_generated/weapon_awp_awp_tempered_light_png.png" />
-                            </figure>
-                        </td>
-                        <td>Chrome Cannon</td>
-                        <td>AWP</td>
-                        <td>Covert</td>
-                        <td>$500</td>
-                        <td><button class="button is-focused">Comprar</button></td>
+                        <th></th>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Rareza</th>
+                        <th>Precio</th>
                     </tr>
-                    </tbody>
+                </thead>
+                <tbody id="skins-table-body">
+
+                </tbody>
             </table>
         </div>
     </body>
+    <script>
+        fetch('http://localhost:3000/api/v1/skins') 
+            .then(response => response.json())
+            .then(skins => {
+                console.log(skins);
+
+                const tableBody = document.querySelector("#skins-table-body");
+
+                skins.forEach(skin => {
+                    let tr = document.createElement('tr');
+
+                    let imagen = document.createElement('td');
+                    let figure = document.createElement('figure');
+                    figure.classList.add("image", "is-128x128");
+                    let img = document.createElement('img');
+                    img.src = skin.imagen_url; 
+                    img.alt = `Skin ${skin.nombre}`;
+                    figure.appendChild(img);
+                    imagen.appendChild(figure);
+
+                    let name = document.createElement('td');
+                    name.textContent = skin.nombre;
+
+                    let type = document.createElement('td');
+                    type.textContent = skin.tipo;
+
+                    let rarity = document.createElement('td');
+                    rarity.textContent = skin.rareza;
+
+                    let price = document.createElement('td');
+                    price.textContent = `$${skin.precio}`;
+
+                    let boton = document.createElement('td');
+                    let button = document.createElement('button');
+                    button.classList.add("button", "is-focused");
+                    button.textContent = "Comprar";
+                    boton.appendChild(button);
+
+                    tr.appendChild(imagen);
+                    tr.appendChild(name);
+                    tr.appendChild(type);
+                    tr.appendChild(rarity);
+                    tr.appendChild(price);
+                    tr.appendChild(boton);
+
+                    tableBody.appendChild(tr);
+                });
+            })
+            .catch(error => console.error("Error al obtener los datos:", error));
+    </script>
 </html>
