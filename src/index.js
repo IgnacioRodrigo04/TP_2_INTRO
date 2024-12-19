@@ -297,20 +297,25 @@ app.post('/api/v1/cajas', async (req, res) =>{
 
 })
 
-app.delete('/api/v1/cajas/:id', (req, res) => {
+app.delete('/api/v1/cajas/:id', async (req, res) => {
     if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
+    const conexion = await getConecction()
+    const caja = await conexion.request()
+    .input("id", sql.Int, req.params.id)
+    .query("SELECT * FROM Caja WHERE id = @id");
 
-    const eliminar = cajas.find((element) => element.id == req.params.id)
-    if(eliminar === undefined){
+    if(caja.recordset.length === 0){
         res.sendStatus(404)
         return
     }
+    await conexion.request()
+    .input("id", sql.Int, req.params.id)
+    .query("DELETE FROM Caja WHERE id = @id");
 
-    cajas = cajas.filter((element) => element.id != req.params.id)
-    res.send(eliminar).status(200)
+    res.status(200).send(caja.recordset[0])
 })
 
 app.put('/api/v1/cajas/:id' , (req, res) =>{
