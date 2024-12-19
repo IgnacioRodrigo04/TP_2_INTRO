@@ -77,21 +77,22 @@ app.post('/api/v1/usuarios', async (req, res) => {
     res.send(nuevo).status(201)
 })
 
-app.delete('/api/v1/usuarios/:id', (req, res) => {
+app.delete('/api/v1/usuarios/:id', async (req, res) => {
     if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
-    const eliminar = usuarios.find((element) => element.id == req.params.id)
-    if(eliminar === undefined){
+    const conexion = await getConecction()
+    const eliminar = await conexion.request()
+    .input("id", sql.Int, req.params.id)
+    .query("DELETE FROM usuarios WHERE id = @id");
+
+     if(eliminar.rowsAffected[0] === 0){
         res.sendStatus(404)
         return
     }
-
-    usuarios = usuarios.filter((element) => element.id != req.params.id)
-    res.send(eliminar).status(200)
+    res.send(eliminar.recordset[0]).status(200)
 })
-
 
 
 app.put('/api/v1/usuarios/:id' , (req, res) =>{
