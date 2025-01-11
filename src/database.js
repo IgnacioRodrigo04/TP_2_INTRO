@@ -3,7 +3,7 @@ import sql from 'mssql'
 const dbSettings = {
     user: "sa",
     password: "yourStrong(!)Password",
-    server: "localhost", 
+    server: "1433", 
     database: "MIDB", 
     options:{
         encrypt: false,

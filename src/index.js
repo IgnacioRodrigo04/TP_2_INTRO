@@ -53,20 +53,17 @@ app.get('/api/v1/usuarios/:id', async (req, res) => {
     res.status(200).json(resultado.recordset[0])   
 })
 
-function validar_mail(mail) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(mail);
-}
+
 
 app.post('/api/v1/usuarios', async (req, res) => {
     const nuevo = {
         nombre: req.body.nombre,
-        balance: req.body.balance ?? 0,
-        mail: req.body.mail,
-        contraseña: req.body.contraseña,
+        plata: req.body.plata ?? 0,
+        rango: req.body.rango,
+        historial: req.body.historial,
         skins_compradas: []
     }
-    if(nuevo.nombre === undefined || nuevo.contraseña === undefined || !validar_mail(nuevo.mail) || !validar_numero(nuevo.balance) || nuevo.balance < 0 || validar_numero(nuevo.nombre)
+    if(nuevo.nombre === undefined || nuevo.rango === undefined ||  !validar_numero(nuevo.plata) || nuevo.plata < 0 || validar_numero(nuevo.nombre)
     ||  !Array.isArray(nuevo.skins_compradas) || !nuevo.skins_compradas.every(validar_numero)){
         res.sendStatus(400)
         return
@@ -75,11 +72,11 @@ app.post('/api/v1/usuarios', async (req, res) => {
     const conexion =  await getConnection()
     const resultado = await conexion.request()
         .input('nombre', sql.VarChar, nuevo.nombre)
-        .input('balance', sql.Int, nuevo.balance)
-        .input('mail', sql.VarChar, nuevo.mail)
-        .input('contraseña', sql.VarChar, nuevo.contraseña)
+        .input('plata', sql.Int, nuevo.plata)
+        .input('rango', sql.VarChar, nuevo.rango)
+        .input('historial', sql.VarChar, nuevo.historial)
         .input('skins_compradas', sql.VarChar, nuevo.skins_compradas.join(','))
-        .query(' INSERT INTO usuarios (nombre, balance, mail, contraseña, skins_compradas)(@nombre, @balance, @mail, @contraseña, @skins_compradas)');
+        .query(' INSERT INTO usuarios (nombre, balance, mail, contraseña, skins_compradas) VALUES (@nombre, @balance, @mail, @contraseña, @skins_compradas)');
     res.sendStatus(201)
 })
 
@@ -110,9 +107,9 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
         res.sendStatus(400)
         return;
     }
-    const  { nombre, balance, mail, contraseña, skins_compradas } = req.body;
-    if(!validar_mail(mail) || balance < 0 || !validar_numero(balance) || validar_numero(contraseña) 
-        || nombre === undefined || contraseña === undefined || !Array.isArray(skins_compradas) || !skins_compradas.every(validar_numero)){ 
+    const  { nombre, plata, rango, historial, skins_compradas } = req.body;
+    if( plata < 0 || !validar_numero(plata) || rango === undefined 
+        || nombre === undefined || historial === undefined || !Array.isArray(skins_compradas) || !skins_compradas.every(validar_numero)){ 
         res.sendStatus(400)
         return;
     }
@@ -121,9 +118,9 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
     const editado = await conexion.request()
     .input("id", sql.Int, req.params.id)
     .input("nombre", sql.VarChar, req.body.nombre)
-    .input("balance", sql.Int, req.body.balance)
-    .input("mail", sql.VarChar, req.body.mail)
-    .input("contraseña", sql.VarChar, req.body.contraseña)
+    .input("plata", sql.Int, req.body.plata)
+    .input("rango", sql.VarChar, req.body.rango)
+    .input("historial", sql.VarChar, req.body.historial)
     .input('skins_compradas', sql.VarChar, req.body.skins_compradas.join(','))
 
     .query('UPDATE usuarios SET nombre = @nombre, balance = @balance, mail = @mail, contraseña = @contraseña, skins_compradas = @skins_compradas WHERE id = @id')
@@ -249,112 +246,3 @@ app.put('/api/v1/skins/:id' , async (req, res) =>{
     res.status(200).send(skin_actualizada.recordset[0]);
 })
 
-
-app.get('/api/v1/cajas/', async (req, res)=>{
-    const conexion = await getConnection()
-    const resultado = await conexion.request().query("SELECT * FROM Caja")
-    res.json(resultado.recordset)
-})
-
-
-app.get('/api/v1/cajas/:id' , async (req, res) => {
-    if(!validar_numero(req.params.id)){
-        res.sendStatus(400)
-        return;
-    }
-    const conexion = await getConnection()
-    const resultado = await conexion.request()
-    .input('id', sql.Int, req.params.id)
-    .query("SElECT * FROM Caja WHERE id = @id")
-    
-    if(resultado.recordset.length === 0){
-        res.sendStatus(404)
-        return
-    }
-    res.status(200).json(resultado.recordset[0])  
-})
-
-app.post('/api/v1/cajas', async (req, res) =>{
-    const nuevo = {
-        nombre: req.body.nombre,
-        precio: req.body.precio ?? 1,
-        tipo: req.body.tipo,
-        imagen_url: req.body.imagen_url,
-        posibles_skins: req.body.posibles_skins
-
-    }
-    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.precio === undefined || nuevo.imagen_url === undefined || !Array.isArray(nuevo.posibles_skins) || 
-    nuevo.posibles_skins.length === 0 ||!validar_numero(nuevo.precio) || nuevo.precio <= 0){
-        res.sendStatus(400)
-        return;
-    }
-   
-    const conexion =  await getConnection()
-    const resultado = await conexion.request()
-        .input('nombre', sql.VarChar, nuevo.nombre)
-        .input('precio', sql.Int, nuevo.precio)
-        .input('tipo', sql.VarChar, nuevo.tipo)
-        .input('imagen_url', sql.Varchar, nuevo.imagen_url)
-        .input('posibles_skins', sql.VarChar, nuevo.posibles_skins.join(','))
-        .query('INSERT INTO Caja (nombre, precio, tipo, imagen_url, posibles_skins)(@nombre, @precio, @tipo, @imagen_url, @posibles_skins)');
-    
-    res.sendStatus(201)
-
-})
-
-app.delete('/api/v1/cajas/:id', async (req, res) => {
-    if(!validar_numero(req.params.id)){
-        res.sendStatus(400)
-        return;
-    }
-    const conexion = await getConnection()
-    const caja = await conexion.request()
-    .input("id", sql.Int, req.params.id)
-    .query("SELECT * FROM Caja WHERE id = @id");
-
-    if(caja.recordset.length === 0){
-        res.sendStatus(404)
-        return
-    }
-    await conexion.request()
-    .input("id", sql.Int, req.params.id)
-    .query("DELETE FROM Caja WHERE id = @id");
-
-    res.status(200).send(caja.recordset[0])
-})
-
-app.put('/api/v1/cajas/:id' , async (req, res) =>{
-
-    if(!validar_numero(req.params.id)){
-        res.sendStatus(400)
-        return;
-    }
-    const  { nombre, tipo,  precio, imagen_url, posibles_skins} = req.body;
-    if(validar_numero(nombre) || precio < 0 || !validar_numero(precio) || validar_numero(imagen_url) 
-        || nombre === undefined || tipo === undefined ||imagen_url === undefined|| validar_numero(tipo) || !Array.isArray(posibles_skins) || posibles_skins.length === 0){ 
-        res.sendStatus(400)
-        return;
-    }
-    
-    const conexion = await getConnection()
-    const editado = await conexion.request()
-    .input("id", sql.Int, req.params.id)
-    .input("nombre", sql.VarChar, req.body.nombre)
-    .input("tipo", sql.VarChar, req.body.tipo)
-    .input("precio", sql.Int, req.body.precio)
-    .input("imagen_url", sql.VarChar, req.body.imagen_url)
-    .input('posibles_skins', sql.VarChar, req.body.posibles_skins.join(','))
-
-    .query('UPDATE Skin SET nombre = @nombre, tipo = @tipo, precio = @precio, imagen_url = @imagen_url, posibles_skins = @posibles_skins WHERE id = @id')
-   
-    if(editado.rowsAffected[0] === 0){
-        res.sendStatus(404)
-        return
-    }
-
-    const caja_actualizada = await conexion.request()
-    .input("id", sql.Int, req.params.id)
-    .query("SELECT * FROM Caja WHERE id = @id");
-
-    res.status(200).send(caja_actualizada.recordset[0]);
-})
