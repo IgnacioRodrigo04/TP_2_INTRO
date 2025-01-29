@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -11,4 +6,32 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+
+model Skins {
+  id Int  @id @default(autoincrement())
+  nombre String
+  precio Decimal @default(100)
+  tipo String 
+  rareza String
+  imagen String 
+}
+
+model Historial {
+  id Int  @id @default(autoincrement())
+  kda String
+  partidas_totales Decimal @default(0)
+  partidas_ganadas Decimal @default(0)
+  partidas_perdidas Decimal @default(0)
+  winrate Decimal @default(0)
+}
+
+model Usuario {
+  id Int  @id @default(autoincrement())
+  nombre String
+  plata Decimal @default(0)
+  rango String 
+  coleccion Int[]
+  historial Int[]
 }

@@ -1,19 +1,12 @@
 
-import { getConnection } from './database.js'
-import sql from 'mssql'
-
-import dotenv from 'dotenv';
-dotenv.config();
-
 import express from 'express';
-
+const { PrismaClient } = require('@prisma/client') 
 const app = express();
-
-const port = process.env.PORT || 3000;
+const prisma = new PrismaClient()
 
 app.listen(port, () => {
-  console.log(`Servidor corriendo en el puerto ${port}`);
-});
+  console.log(`Servidor corriendo en el puerto 3000`);
+})
 
 app.use(express.json())
 
@@ -22,7 +15,8 @@ app.get('/', (req, res) => {
   res.send('Skins CS')
 })
 
-app.get('/api/v1/usuarios',  async (req, res) => {    
+app.get('/api/v1/usuarios',  async (req, res) => { 
+    prisma.usuario   
     const conexion = await getConnection()
     const resultado = await conexion.request().query("SELECT * FROM Usuarios")
     res.json(resultado.recordset)
