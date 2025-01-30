@@ -51,7 +51,6 @@ app.get('/api/v1/usuarios/:id', async (req, res) => {
 })
 
 
-
 app.post('/api/v1/usuarios', async (req, res) => {
     const nuevo = {
         nombre: req.body.nombre,
@@ -78,25 +77,31 @@ app.post('/api/v1/usuarios', async (req, res) => {
     res.status(201).send(nuevo_usuario)
 })
 
+
 app.delete('/api/v1/usuarios/:id', async (req, res) => {
     if(!validar_numero(req.params.id)){
         res.sendStatus(400)
         return;
     }
-    const conexion = await getConnection()
-    const usuario = await conexion.request()
-    .input("id", sql.Int, req.params.id)
-    .query("SELECT * FROM Usuarios WHERE id = @id");
 
-    if(usuario.recordset.length === 0){
+    const usuario = await prisma.usuario.findUnique({
+        where: {
+            id: parseInt(req.params.id)
+        }
+    })
+    
+    if(usuario === null){
         res.sendStatus(404)
-        return
+        return   
     }
-    await conexion.request()
-    .input("id", sql.Int, req.params.id)
-    .query("DELETE FROM Usuarios WHERE id = @id");
 
-    res.status(200).send(usuario.recordset[0])
+    await prisma.usuario.delete({
+        where:{
+            id: parseInt(req.params.id)
+        }
+    })
+
+   res.send(usuario)
 })
 
 
