@@ -89,7 +89,7 @@ app.delete('/api/v1/usuarios/:id', async (req, res) => {
             id: parseInt(req.params.id)
         }
     })
-    
+
     if(usuario === null){
         res.sendStatus(404)
         return   
@@ -110,34 +110,32 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
         res.sendStatus(400)
         return;
     }
-    const  { nombre, plata, rango, historial, skins_compradas } = req.body;
-    if( plata < 0 || !validar_numero(plata) || rango === undefined 
-        || nombre === undefined || historial === undefined || !Array.isArray(skins_compradas) || !skins_compradas.every(validar_numero)){ 
-        res.sendStatus(400)
-        return;
-    }
-    
-    const conexion = await getConnection()
-    const editado = await conexion.request()
-    .input("id", sql.Int, req.params.id)
-    .input("nombre", sql.VarChar, req.body.nombre)
-    .input("plata", sql.Int, req.body.plata)
-    .input("rango", sql.VarChar, req.body.rango)
-    .input("historial", sql.VarChar, req.body.historial)
-    .input('skins_compradas', sql.VarChar, req.body.skins_compradas.join(','))
 
-    .query('UPDATE usuarios SET nombre = @nombre, balance = @balance, mail = @mail, contraseña = @contraseña, skins_compradas = @skins_compradas WHERE id = @id')
-   
-    if(editado.rowsAffected[0] === 0){
+    let usuario = await prisma.usuario.findUnique({
+        where: {
+            id: parseInt(req.params.id)
+        }
+    })
+
+    if (usuario === null){
         res.sendStatus(404)
         return
     }
+    
+    usuario = await prisma.usuario.update({
+        where: {
+            id: usuario.id
+        },
+        data:{
+            nombre: req.body.nombre,
+            plata: req.body.plata,
+            rango: req.body.rango,
+            coleccion: req.body.coleccion,
+            historial: req.body.historial
+        }
+    })
 
-    const usuario_actualizado = await conexion.request()
-    .input("id", sql.Int, req.params.id)
-    .query("SELECT * FROM Usuarios WHERE id = @id");
-
-    res.status(200).send(usuario_actualizado.recordset[0]);
+    res.send(usuario);
 })
 
 
