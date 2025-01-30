@@ -140,9 +140,8 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
 
 
 app.get('/api/v1/skins', async (req, res) =>{
-    const conexion = await getConnection()
-    const resultado = await conexion.request().query("SELECT * FROM Skin")
-    res.json(resultado.recordset)
+    const skins = await prisma.skins.findMany()  
+    res.json(skins)
 })
 
 app.get('/api/v1/skins/:id' , async (req, res) => {
@@ -150,42 +149,43 @@ app.get('/api/v1/skins/:id' , async (req, res) => {
         res.sendStatus(400)
         return;
     }
-    const conexion = await getConnection()
-    const resultado = await conexion.request()
-    .input('id', sql.Int, req.params.id)
-    .query("SElECT * FROM Skin WHERE id = @id")
-    
-    if(resultado.recordset.length === 0){
+    const skin = await prisma.skins.findUnique({
+        where: {
+            id: parseInt(req.params.id)
+        }
+    })
+    if(skin === null){
         res.sendStatus(404)
-        return
+        return   
     }
-    res.status(200).json(resultado.recordset[0])  
+    res.json(skin) 
 })
 
 app.post('/api/v1/skins', async (req, res) =>{
     const nuevo = {
         nombre: req.body.nombre,
-        rareza: req.body.rareza,
+        precio: req.body.precio,
         tipo: req.body.tipo,
-        precio_mercado: req.body.precio_mercado ?? 100,
-        imagen_url: req.body.imagen_url
+        rareza: req.body.rareza,
+        imagen: req.body.imagen
     }
 
-    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen_url === undefined || !validar_numero(nuevo.precio_mercado) || 
-    nuevo.precio_mercado <= 0 || validar_numero(nuevo.rareza) || validar_numero(nuevo.tipo)){
+    if(nuevo.nombre === undefined || nuevo.tipo === undefined || nuevo.rareza === undefined || nuevo.imagen === undefined || !validar_numero(nuevo.precio) || 
+    nuevo.precio <= 0 || validar_numero(nuevo.rareza) || validar_numero(nuevo.tipo)){
         res.sendStatus(400)
         return;
     }
    
-    const conexion =  await getConnection()
-    const resultado = await conexion.request()
-        .input('nombre', sql.VarChar, nuevo.nombre)
-        .input('rareza', sql.VarChar, nuevo.rareza)
-        .input('tipo', sql.VarChar, nuevo.tipo)
-        .input('precio_mercado', sql.Int, nuevo.precio_mercado)
-        .input('imagen_url', sql.VarChar, nuevo.imagen_url)
-        .query('INSERT INTO Skin (nombre, rareza, tipo, precio_mercado, imagen_url)(@nombre, @rareza, @tipo, @precio_mercado, @imagen_url)');
-    res.sendStatus(201)
+    const nueva_skin = await prisma.skins.create({
+        data: {
+            nombre: req.body.nombre,
+            precio: req.body.precio,
+            tipo: req.body.tipo,
+            rareza: req.body.rareza,
+            imagen: req.body.imagen
+        }
+    }) 
+    res.status(201).send(nueva_skin)
 
 })
 
