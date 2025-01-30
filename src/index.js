@@ -218,33 +218,31 @@ app.put('/api/v1/skins/:id' , async (req, res) =>{
         res.sendStatus(400)
         return;
     }
-    const  { nombre, tipo, rareza, precio_mercado, imagen_url } = req.body;
-    if(validar_numero(nombre) || precio_mercado < 0 || !validar_numero(precio_mercado) || validar_numero(imagen_url) 
-        || nombre === undefined || tipo === undefined || rareza === undefined|| validar_numero(tipo) || validar_numero(rareza)){ 
-        res.sendStatus(400)
-        return;
-    }
-    
-    const conexion = await getConnection()
-    const editado = await conexion.request()
-    .input("id", sql.Int, req.params.id)
-    .input("nombre", sql.VarChar, req.body.nombre)
-    .input("tipo", sql.Varchar, req.body.tipo)
-    .input("rareza", sql.VarChar, req.body.rareza)
-    .input("precio_mercado", sql.Int, req.body.precio_mercado)
-    .input('imagen_url', sql.VarChar, req.body.imagen_url)
 
-    .query('UPDATE Skin SET nombre = @nombre, tipo = @tipo, rareza = @rareza, precio_mercado = @precio_mercado, imagen_url = @imagen_url WHERE id = @id')
-   
-    if(editado.rowsAffected[0] === 0){
+    let skin = await prisma.skins.findUnique({
+        where: {
+            id: parseInt(req.params.id)
+        }
+    })
+
+    if (skin === null){
         res.sendStatus(404)
         return
     }
+    
+    skin = await prisma.skins.update({
+        where: {
+            id: skin.id
+        },
+        data:{
+            nombre: req.body.nombre,
+            precio: req.body.precio,
+            tipo: req.body.tipo,
+            rareza: req.body.rareza,
+            imagen: req.body.imagen
+        }
+    })
 
-    const skin_actualizada = await conexion.request()
-    .input("id", sql.Int, req.params.id)
-    .query("SELECT * FROM Skin WHERE id = @id");
-
-    res.status(200).send(skin_actualizada.recordset[0]);
+    res.send(skin);
 })
 
