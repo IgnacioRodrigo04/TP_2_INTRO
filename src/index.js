@@ -195,20 +195,21 @@ app.delete('/api/v1/skins/:id', async (req, res) => {
         res.sendStatus(400)
         return;
     }
-    const conexion = await getConnection()
-    const skin = await conexion.request()
-    .input("id", sql.Int, req.params.id)
-    .query("SELECT * FROM Skin WHERE id = @id");
-
-    if(skin.recordset.length === 0){
+    const skin = await prisma.skins.findUnique({
+        where: {
+            id: parseInt(req.params.id)
+        }
+    })
+    if(skin === null){
         res.sendStatus(404)
-        return
+        return   
     }
-    await conexion.request()
-    .input("id", sql.Int, req.params.id)
-    .query("DELETE FROM Skin WHERE id = @id");
-
-    res.status(200).send(skin.recordset[0])
+    await prisma.skins.delete({
+        where:{
+            id: parseInt(req.params.id)
+        }
+    })
+   res.send(skin)
 })
 
 app.put('/api/v1/skins/:id' , async (req, res) =>{
