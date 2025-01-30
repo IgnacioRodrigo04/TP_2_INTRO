@@ -38,7 +38,16 @@ app.get('/api/v1/usuarios/:id', async (req, res) => {
         res.sendStatus(400)
         return;
     }
-   
+    const usuario = await prisma.usuario.findUnique({
+        where: {
+            id: parseInt(req.params.id)
+        }
+    })
+    if(usuario === null){
+        res.sendStatus(404)
+        return   
+    }
+    res.json(usuario)
 })
 
 
@@ -46,7 +55,7 @@ app.get('/api/v1/usuarios/:id', async (req, res) => {
 app.post('/api/v1/usuarios', async (req, res) => {
     const nuevo = {
         nombre: req.body.nombre,
-        plata: req.body.plata ?? 0,
+        plata: req.body.plata,
         rango: req.body.rango,
         historial: req.body.historial,
         coleccion: req.body.coleccion
