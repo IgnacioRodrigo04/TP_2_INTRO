@@ -1,11 +1,16 @@
 
 import express from 'express';
-const { PrismaClient } = require('@prisma/client') 
-const app = express();
-const prisma = new PrismaClient()
+import { PrismaClient } from '@prisma/client';
 
-app.listen(port, () => {
-  console.log(`Servidor corriendo en el puerto 3000`);
+const prisma = new PrismaClient();
+
+export default prisma;
+
+const app = express();
+const puerto = 3000
+
+app.listen(puerto, () => {
+  console.log(`Servidor corriendo en el puerto ${puerto}`);
 })
 
 app.use(express.json())
@@ -16,10 +21,8 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api/v1/usuarios',  async (req, res) => { 
-    prisma.usuario   
-    const conexion = await getConnection()
-    const resultado = await conexion.request().query("SELECT * FROM Usuarios")
-    res.json(resultado.recordset)
+    const usuarios = await prisma.usuario.findMany()  
+    res.json(usuarios)
 })
 
 function validar_numero(numero) {
@@ -35,16 +38,7 @@ app.get('/api/v1/usuarios/:id', async (req, res) => {
         res.sendStatus(400)
         return;
     }
-    const conexion = await getConnection()
-    const resultado = await conexion.request()
-    .input('id', sql.Int, req.params.id)
-    .query("SElECT * FROM Usuarios WHERE id = @id")
-    
-    if(resultado.recordset.length === 0){
-        res.sendStatus(404)
-        return
-    }
-    res.status(200).json(resultado.recordset[0])   
+   
 })
 
 
@@ -55,23 +49,24 @@ app.post('/api/v1/usuarios', async (req, res) => {
         plata: req.body.plata ?? 0,
         rango: req.body.rango,
         historial: req.body.historial,
-        skins_compradas: []
+        coleccion: req.body.coleccion
     }
     if(nuevo.nombre === undefined || nuevo.rango === undefined ||  !validar_numero(nuevo.plata) || nuevo.plata < 0 || validar_numero(nuevo.nombre)
-    ||  !Array.isArray(nuevo.skins_compradas) || !nuevo.skins_compradas.every(validar_numero)){
+    ||  !Array.isArray(nuevo.coleccion) || !nuevo.coleccion.every(validar_numero)){
         res.sendStatus(400)
         return
     }
 
-    const conexion =  await getConnection()
-    const resultado = await conexion.request()
-        .input('nombre', sql.VarChar, nuevo.nombre)
-        .input('plata', sql.Int, nuevo.plata)
-        .input('rango', sql.VarChar, nuevo.rango)
-        .input('historial', sql.VarChar, nuevo.historial)
-        .input('skins_compradas', sql.VarChar, nuevo.skins_compradas.join(','))
-        .query(' INSERT INTO usuarios (nombre, balance, mail, contraseña, skins_compradas) VALUES (@nombre, @balance, @mail, @contraseña, @skins_compradas)');
-    res.sendStatus(201)
+    const nuevo_usuario = await prisma.usuario.create({
+        data: {
+            nombre: req.body.nombre,
+            plata:  req.body.plata,
+            rango: req.body.rango,
+            coleccion: req.body.coleccion,
+            historial: req.body.historial
+        }
+    }) 
+    res.status(201).send(nuevo_usuario)
 })
 
 app.delete('/api/v1/usuarios/:id', async (req, res) => {

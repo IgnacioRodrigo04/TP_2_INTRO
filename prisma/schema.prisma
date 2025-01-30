@@ -27,7 +27,7 @@ model Historial {
   winrate Decimal @default(0)
 }
 
-model Usuario {
+model Usuarios {
   id Int  @id @default(autoincrement())
   nombre String
   plata Decimal @default(0)
