@@ -246,3 +246,25 @@ app.put('/api/v1/skins/:id' , async (req, res) =>{
     res.send(skin);
 })
 
+
+app.get('/api/v1/historial', async (req, res) =>{
+    const historial = await prisma.historial.findMany()  
+    res.json(historial)
+})
+
+app.get('/api/v1/historial/:id' , async (req, res) => {
+    if(!validar_numero(req.params.id)){
+        res.sendStatus(400)
+        return;
+    }
+    const historial = await prisma.historial.findUnique({
+        where: {
+            id: parseInt(req.params.id)
+        }
+    })
+    if(historial === null){
+        res.sendStatus(404)
+        return   
+    }
+    res.json(historial) 
+})
