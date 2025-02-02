@@ -297,3 +297,24 @@ app.post('/api/v1/historial', async (req, res) =>{
 
 })
 
+app.delete('/api/v1/historial/:id', async (req, res) => {
+    if(!validar_numero(req.params.id)){
+        res.sendStatus(400)
+        return;
+    }
+    const borrar = await prisma.historial.findUnique({
+        where: {
+            id: parseInt(req.params.id)
+        }
+    })
+    if(borrar === null){
+        res.sendStatus(404)
+        return   
+    }
+    await prisma.historial.delete({
+        where:{
+            id: parseInt(req.params.id)
+        }
+    })
+   res.send(borrar)
+})
