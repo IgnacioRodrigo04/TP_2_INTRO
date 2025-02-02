@@ -268,3 +268,32 @@ app.get('/api/v1/historial/:id' , async (req, res) => {
     }
     res.json(historial) 
 })
+
+app.post('/api/v1/historial', async (req, res) =>{
+    const nuevo = {
+        kda: req.body.kda,
+        partidas_totales: req.body.partidas_totales,
+        partidas_ganadas: req.body.partidas_ganadas,
+        partidas_perdidas: req.body.partidas_perdidas,
+        winrate: req.body.winrate
+    }
+
+    if(nuevo.kda === undefined || nuevo.partidas_ganadas === undefined || nuevo.partidas_perdidas === undefined || nuevo.winrate === undefined || !validar_numero(nuevo.partidas_totales) || 
+    nuevo.partidas_totales < 0 || !validar_numero(nuevo.partidas_perdidas) || !validar_numero(nuevo.partidas_ganadas)){
+        res.sendStatus(400)
+        return;
+    }
+   
+    const nuevo_historial = await prisma.historial.create({
+        data: {
+            kda: req.body.kda,
+            partidas_totales: req.body.partidas_totales,
+            partidas_ganadas: req.body.partidas_ganadas,
+            partidas_perdidas: req.body.partidas_perdidas,
+            winrate: req.body.winrate
+        }
+    }) 
+    res.status(201).send(nuevo_historial)
+
+})
+
