@@ -318,3 +318,38 @@ app.delete('/api/v1/historial/:id', async (req, res) => {
     })
    res.send(borrar)
 })
+
+
+app.put('/api/v1/historial/:id' , async (req, res) =>{
+    
+    if(!validar_numero(req.params.id)){
+        res.sendStatus(400)
+        return;
+    }
+
+    let editar = await prisma.historial.findUnique({
+        where: {
+            id: parseInt(req.params.id)
+        }
+    })
+
+    if (editar === null){
+        res.sendStatus(404)
+        return
+    }
+    
+    editar = await prisma.historial.update({
+        where: {
+            id: editar.id
+        },
+        data:{
+            kda: req.body.kda,
+            partidas_totales: req.body.partidas_totales,
+            partidas_ganadas: req.body.partidas_ganadas,
+            partidas_perdidas: req.body.partidas_perdidas,
+            winrate: req.body.winrate
+        }
+    })
+
+    res.send(editar);
+})
