@@ -16,138 +16,49 @@
             <nav class="navbar" role="navigation" aria-label="main navigation">
                 <div id="navbarBasicExample" class="navbar-menu">
                     <div class="navbar-start">
-                        <a class="navbar-item" href="index.html">CS Marketplace</a>
-                        <a class="navbar-item" href="users.html">Perfil</a>
-                        <a class="navbar-item" href="skins.html">Skins</a>
-                        <a class="navbar-item" href="cajas.html">Cajas</a>
+                        <a class="navbar-item" href="index.html">
+                        CS Marketplace
+                        </a>
+            
+                        <a class="navbar-item" href="users.html">
+                        Perfiles
+                        </a>
                     </div>
-                    <div class="navbar-end">
-                        <div class="navbar-item">
-                            <div class="buttons">
-                                <a class="button is-primary" href="crear_usuario.html"><strong>Sign up</strong></a>
-                                <a class="button is-light" href="login_usuario.html">Log in</a>
-                            </div>
-                        </div>
-                    </div>
+            
                 </div>
             </nav>
-
-            <section class="section is-medium">
-                <div class="container is-max-desktop">
-                    <h1 class="title">Perfil del Usuario</h1>
-
-                    <table class="table is-fullwidth is-striped">
-                        <thead>
-                            <tr>
-                                <th>Nombre de Usuario</th>
-                                <th>Email Registrado</th>
-                                <th>Balance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td id="username">buda</td>
-                                <td id="email">budaCS@gmail.com</td>
-                                <td id="balance">$12500</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <h2 class="title">Inventario de Skins</h2>
-                    <table class="table is-fullwidth">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Nombre</th>
-                                <th>Tipo</th>
-                                <th>Rareza</th>
-                                <th>Precio</th>
-                                <th>Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="skins-table-body">
-                        </tbody>
-                    </table>
-                </div>
-            </section>
+            <table class="table is-fullwidth is-striped">
+                <thead>
+                  <tr>
+                    <th>Nombre de Usuario</th>
+                    <th>Balance</th>
+                    <th>Rango</th>
+                    <th>Coleccion</th>
+                    <th>Historial</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Buda</td>
+                    <td>$12500</td>
+                    <td>Gold Nova 3</td>
+                    <td><a class="button is-focused" href="skins.html">Ver</a></td>
+                    <td><a class="button is-focused" href="historial_partidas.html">Ver</a></td>
+                  </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                      <td>Mazino</td>
+                      <td>$1500</td>
+                      <td>Master Guardian Elite</td>
+                      <td><a class="button is-focused" href="skins.html">Ver</a></td>
+                      <td><a class="button is-focused" href="historial_partidas.html">Ver</a></td>
+                    </tr>
+                </tbody>
+                <tbody id="userTable">
+                    <!--Se cargan los usarios aca-->
+                </tbody>
+              </table>
         </div>
-
-        <script>
-            const userProfile = {
-                username: 'buda',
-                email: 'budaCS@gmail.com',
-                balance: 12500
-            };
-
-            const userSkins = [
-                {
-                    nombre: 'Chrome Cannon',
-                    tipo: 'AWP',
-                    rareza: 'Covert',
-                    precio: 400,
-                    imagen_url: 'https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/default_generated/weapon_awp_awp_tempered_light_png.png'
-                },
-                {
-                    nombre: 'Desert Eagle | Blaze',
-                    tipo: 'Desert Eagle',
-                    rareza: 'Classified',
-                    precio: 800,
-                    imagen_url: 'https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/default_generated/weapon_deagle_aa_flames_light_png.png'
-                },
-                {
-                    nombre: 'AK-47 | Redline',
-                    tipo: 'AK-47',
-                    rareza: 'Mil-Spec',
-                    precio: 350,
-                    imagen_url: 'https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/default_generated/weapon_ak47_cu_ak47_cobra_light_png.png'
-                }
-            ];
-
-            document.querySelector("#username").textContent = userProfile.username;
-            document.querySelector("#email").textContent = userProfile.email;
-            document.querySelector("#balance").textContent = `$${userProfile.balance}`;
-
-            const tableBody = document.querySelector("#skins-table-body");
-
-            userSkins.forEach(skin => {
-                let tr = document.createElement('tr');
-
-                let imagen = document.createElement('td');
-                let figure = document.createElement('figure');
-                figure.classList.add("image", "is-128x128");
-                let img = document.createElement('img');
-                img.src = skin.imagen_url;
-                img.alt = `Skin ${skin.nombre}`;
-                figure.appendChild(img);
-                imagen.appendChild(figure);
-
-                let name = document.createElement('td');
-                name.textContent = skin.nombre;
-
-                let type = document.createElement('td');
-                type.textContent = skin.tipo;
-
-                let rarity = document.createElement('td');
-                rarity.textContent = skin.rareza;
-
-                let price = document.createElement('td');
-                price.textContent = `$${skin.precio}`;
-
-                let action = document.createElement('td');
-                let button = document.createElement('button');
-                button.classList.add("button", "is-focused");
-                button.textContent = "Vender"; 
-                action.appendChild(button);
-
-                tr.appendChild(imagen);
-                tr.appendChild(name);
-                tr.appendChild(type);
-                tr.appendChild(rarity);
-                tr.appendChild(price);
-                tr.appendChild(action);
-
-                tableBody.appendChild(tr);
-            });
-        </script>
     </body>
 </html>

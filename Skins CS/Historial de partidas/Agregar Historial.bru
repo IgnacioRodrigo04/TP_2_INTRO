@@ -1,0 +1,22 @@
+meta {
+  name: Agregar Historial
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/api/v1/cajas
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "shoshso",
+    "precio": 11,
+    "tipo": "basura",
+    "imagen_url": "-",
+    "posibles_skins": ["10"]
+    
+  }
+}
