@@ -68,5 +68,12 @@
             </table>
             <div id="usuariosContainer"><!--Se cargan las skins aca--></div>
         </div>
+        <script>
+            fetch('http://localhost:3000/api/v1/skins')
+            .then(response => response.json())
+            .then(json =>{
+                console.log(json)
+              })
+          </script>
     </body>
 </html>
