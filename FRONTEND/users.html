@@ -37,6 +37,7 @@
                     <th>Historial</th>
                   </tr>
                 </thead>
+                <!--Borrar los usuarios de prueba al final-->
                 <tbody>
                   <tr>
                     <td>Buda</td>
@@ -55,10 +56,32 @@
                       <td><a class="button is-focused" href="historial_partidas.html">Ver</a></td>
                     </tr>
                 </tbody>
-                <tbody id="userTable">
+                <tbody id="TablaUser">
                     <!--Se cargan los usarios aca-->
                 </tbody>
               </table>
         </div>
+        <script>
+            fetch('http://localhost:3000/api/v1/usuarios')
+                .then(response => response.json())
+                .then(data => {
+                    const Tabla = document.getElementById("TablaUser");
+    
+                    data.forEach(usuario => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${usuario.id}</td>
+                            <td>${usuario.nombre}</td>
+                            <td>${usuario.rango}</td>
+                            <td>
+                                <a href="skins.html?usuarioId=${usuario.id}" class="button is-link">Ver Colección</a>
+                                <a href="historial_partidas.html?usuarioId=${usuario.id}" class="button is-link">Ver Historial</a>
+                            </td>
+                        `;
+                        Tabla.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching users:', error));
+        </script>
     </body>
 </html>
