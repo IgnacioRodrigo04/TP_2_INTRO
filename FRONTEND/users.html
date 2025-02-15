@@ -74,14 +74,14 @@
                             <td>${usuario.nombre}</td>
                             <td>${usuario.rango}</td>
                             <td>
-                                <a href="skins.html?usuarioId=${usuario.id}" class="button is-link">Ver Colección</a>
-                                <a href="historial_partidas.html?usuarioId=${usuario.id}" class="button is-link">Ver Historial</a>
+                                <a href="skins.html?usuarioId=${usuario.id}" class="button is-link" target="_blank">Ver Colección</a>
+                                <a href="historial_partidas.html?usuarioId=${usuario.id}" class="button is-link" target="_blank">Ver Historial</a>
                             </td>
                         `;
                         Tabla.appendChild(row);
                     });
                 })
-                .catch(error => console.error('Error fetching users:', error));
+                .catch(error => console.error('Error obteniendo users:', error));
         </script>
     </body>
 </html>
