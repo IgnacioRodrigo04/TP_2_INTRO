@@ -35,20 +35,20 @@ function validar_numero(numero) {
 
 app.get('/api/v1/usuarios/:id', async (req, res) => {
     if(!validar_numero(req.params.id)){
-        res.sendStatus(400)
+        res.sendStatus(400);
         return;
     }
     const usuario = await prisma.usuario.findUnique({
-        where: {
-            id: parseInt(req.params.id)
-        }
-    })
+        where: { id: parseInt(req.params.id) },
+        include: {coleccion: true}
+    });
+
     if(usuario === null){
         res.sendStatus(404)
-        return   
+        return;
     }
-    res.json(usuario)
-})
+    res.json(usuario);
+});
 
 
 app.post('/api/v1/usuarios', async (req, res) => {
