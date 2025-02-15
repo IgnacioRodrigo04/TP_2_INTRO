@@ -62,8 +62,7 @@ app.post('/api/v1/usuarios', async (req, res) => {
         historial: req.body.historial,
         coleccion: req.body.coleccion
     }
-    if(nuevo.nombre === undefined || nuevo.rango === undefined ||  !validar_numero(nuevo.plata) || nuevo.plata < 0 || validar_numero(nuevo.nombre)
-    ||  !Array.isArray(nuevo.coleccion) || !nuevo.coleccion.every(validar_numero)){
+    if(nuevo.nombre === undefined || nuevo.rango === undefined ||  !validar_numero(nuevo.plata) || nuevo.plata < 0 || validar_numero(nuevo.nombre)){
         res.sendStatus(400)
         return
     }
