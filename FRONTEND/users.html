@@ -37,25 +37,6 @@
                     <th>Historial</th>
                   </tr>
                 </thead>
-                <!--Borrar los usuarios de prueba al final-->
-                <tbody>
-                  <tr>
-                    <td>Buda</td>
-                    <td>$12500</td>
-                    <td>Gold Nova 3</td>
-                    <td><a class="button is-focused" href="skins.html">Ver</a></td>
-                    <td><a class="button is-focused" href="historial_partidas.html">Ver</a></td>
-                  </tr>
-                </tbody>
-                <tbody>
-                    <tr>
-                      <td>Mazino</td>
-                      <td>$1500</td>
-                      <td>Master Guardian Elite</td>
-                      <td><a class="button is-focused" href="skins.html">Ver</a></td>
-                      <td><a class="button is-focused" href="historial_partidas.html">Ver</a></td>
-                    </tr>
-                </tbody>
                 <tbody id="TablaUser">
                     <!--Se cargan los usarios aca-->
                 </tbody>
@@ -70,12 +51,15 @@
                     data.forEach(usuario => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${usuario.id}</td>
                             <td>${usuario.nombre}</td>
+                            <td>${usuario.plata}</td>
                             <td>${usuario.rango}</td>
                             <td>
                                 <a href="skins.html?usuarioId=${usuario.id}" class="button is-link" target="_blank">Ver Colección</a>
-                                <a href="historial_partidas.html?usuarioId=${usuario.id}" class="button is-link" target="_blank">Ver Historial</a>
+                               
+                            </td>
+                            <td>
+                                 <a href="historial_partidas.html?usuarioId=${usuario.id}" class="button is-link" target="_blank">Ver Historial</a>
                             </td>
                         `;
                         Tabla.appendChild(row);
