@@ -69,11 +69,35 @@
             <div id="usuariosContainer"><!--Se cargan las skins aca--></div>
         </div>
         <script>
-            fetch('http://localhost:3000/api/v1/skins')
-            .then(response => response.json())
-            .then(json =>{
-                console.log(json)
-              })
-          </script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const usuarioId = urlParams.get("usuarioId");
+        
+            if (usuarioId) {
+                fetch(`http://localhost:3000/api/v1/usuarios/${usuarioId}`)
+                    .then(response => response.json())
+                    .then(usuario => {
+                        if (usuario.coleccion && usuario.coleccion.length > 0) {
+                            const tableBody = document.getElementById("skins-table-body");
+
+                            usuario.coleccion.forEach(skin => {
+                                const row = document.createElement("tr");
+                                row.innerHTML = `
+                                <td>
+                                    <figure class="image is-128x128">
+                                        <img src="${skin.imagen}" />
+                                    </figure>
+                                </td>
+                                <td>${skin.nombre}</td>
+                                <td>${skin.tipo}</td>
+                                <td>${skin.rareza}</td>
+                                <td>$${skin.precio}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    }
+                })
+                .catch(error => console.error("Error obteniendo skins:", error));
+            }
+        </script>
     </body>
 </html>
