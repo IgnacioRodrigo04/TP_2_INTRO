@@ -1,0 +1,22 @@
+meta {
+  name: Agregar usuario
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/api/v1/usuarios
+  body: json
+  auth: none
+}
+
+body:json {
+   {
+     "nombre": "sddaiwl", 
+     "plata": "1002",
+     "rango": "challenger",
+     "coleccion": [0],
+     "historial": [26]
+   }
+  
+}
