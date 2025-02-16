@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <!--Se usaron templates de Bulma para hacer este frontend. (https://bulma.io/)-->
+
 <html>
     <head>
         <title>CS Marketplace</title>
@@ -8,14 +9,11 @@
         <meta name="keywords" content="HTML, CSS, JavaScript">
         <meta name="author" content="Team 9Z">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     </head>
     <body>
         <div class="container is-fluid">
             <nav class="navbar" role="navigation" aria-label="main navigation">
-          
                 <div id="navbarBasicExample" class="navbar-menu">
                     <div class="navbar-start">
                         <a class="navbar-item" href="index.html">
@@ -23,74 +21,51 @@
                         </a>
             
                         <a class="navbar-item" href="users.html">
-                        Perfil
-                        </a>
-
-                        <a class="navbar-item" href="skins.html">
-                            Skins
-                        </a>
-
-                        <a class="navbar-item" href="cajas.html">
-                        Cajas
+                        Perfiles
                         </a>
                     </div>
             
-                    <div class="navbar-end">
-                        <div class="navbar-item">
-                            <div class="buttons">
-                                <a class="button is-primary">
-                                <strong>Sign up</strong>
-                                </a>
-                                <a class="button is-light">
-                                Log in
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </nav>
             <table class="table is-fullwidth is-striped">
                 <thead>
                   <tr>
                     <th>Nombre de Usuario</th>
-                    <th>Email Registrado</th>
                     <th>Balance</th>
+                    <th>Rango</th>
+                    <th>Coleccion</th>
+                    <th>Historial</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>buda</td>
-                    <td>budaCS@gmail.com</td>
-                    <td>$12500</td>
-                  </tr>
+                <tbody id="TablaUser">
+                    <!--Se cargan los usarios aca-->
                 </tbody>
               </table>
-              <h1 class="title">Inventario:</h1>
-              <table class="table is-fullwidth">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Nombre</th>                                                
-                    <th>Tipo</th>
-                    <th>Rareza</th>
-                    <th>Precio</th>
-                </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <figure class="image is-128x128">
-                                <img src="https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/default_generated/weapon_awp_awp_tempered_light_png.png" />
-                            </figure>
-                        </td>
-                        <td>Chrome Cannon</td>
-                        <td>AWP</td>
-                        <td>Covert</td>
-                        <td>$400</td>
-                        <td><button class="button is-focused">Vender</button></td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
+        <script>
+            fetch('http://localhost:3000/api/v1/usuarios')
+                .then(response => response.json())
+                .then(data => {
+                    const Tabla = document.getElementById("TablaUser");
+    
+                    data.forEach(usuario => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${usuario.nombre}</td>
+                            <td>${usuario.plata}</td>
+                            <td>${usuario.rango}</td>
+                            <td>
+                                <a href="skins.html?usuarioId=${usuario.id}" class="button is-link" target="_blank">Ver Colección</a>
+                               
+                            </td>
+                            <td>
+                                 <a href="historial_partidas.html?usuarioId=${usuario.id}" class="button is-link" target="_blank">Ver Historial</a>
+                            </td>
+                        `;
+                        Tabla.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error obteniendo users:', error));
+        </script>
     </body>
 </html>

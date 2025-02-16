@@ -8,14 +8,11 @@
         <meta name="keywords" content="HTML, CSS, JavaScript">
         <meta name="author" content="Team 9Z">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     </head>
     <body>
         <div class="container is-fluid">
             <nav class="navbar" role="navigation" aria-label="main navigation">
-          
                 <div id="navbarBasicExample" class="navbar-menu">
                     <div class="navbar-start">
                         <a class="navbar-item" href="index.html">
@@ -23,29 +20,8 @@
                         </a>
             
                         <a class="navbar-item" href="users.html">
-                        Perfil
+                        Perfiles
                         </a>
-
-                        <a class="navbar-item" href="skins.html">
-                            Skins
-                        </a>
-
-                        <a class="navbar-item" href="cajas.html">
-                        Cajas
-                        </a>
-                    </div>
-            
-                    <div class="navbar-end">
-                        <div class="navbar-item">
-                            <div class="buttons">
-                                <a class="button is-primary">
-                                <strong>Sign up</strong>
-                                </a>
-                                <a class="button is-light">
-                                Log in
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </nav>
@@ -59,6 +35,7 @@
                     <th>Precio</th>
                 </tr>
                 </thead>
+                <!--Borrar la skin de prueba al final-->
                 <tbody>
                 <tr>
                     <td>
@@ -70,7 +47,6 @@
                     <td>Desert Eagle</td>
                     <td>Industrial Grade</td>
                     <td>$100</td>
-                    <td><button class="button is-focused">Comprar</button></td>
                 </tr>
                 </tbody>
                 <tbody>
@@ -84,10 +60,44 @@
                         <td>AWP</td>
                         <td>Covert</td>
                         <td>$500</td>
-                        <td><button class="button is-focused">Comprar</button></td>
                     </tr>
-                    </tbody>
+                </thead>
+                <tbody id="skins-table-body">
+
+                </tbody>
             </table>
+            <div id="usuariosContainer"><!--Se cargan las skins aca--></div>
         </div>
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const usuarioId = urlParams.get("usuarioId");
+        
+            if (usuarioId) {
+                fetch(`http://localhost:3000/api/v1/usuarios/${usuarioId}`)
+                    .then(response => response.json())
+                    .then(usuario => {
+                        if (usuario.coleccion && usuario.coleccion.length > 0) {
+                            const tableBody = document.getElementById("skins-table-body");
+
+                            usuario.coleccion.forEach(skin => {
+                                const row = document.createElement("tr");
+                                row.innerHTML = `
+                                <td>
+                                    <figure class="image is-128x128">
+                                        <img src="${skin.imagen}" />
+                                    </figure>
+                                </td>
+                                <td>${skin.nombre}</td>
+                                <td>${skin.tipo}</td>
+                                <td>${skin.rareza}</td>
+                                <td>$${skin.precio}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    }
+                })
+                .catch(error => console.error("Error obteniendo skins:", error));
+            }
+        </script>
     </body>
 </html>

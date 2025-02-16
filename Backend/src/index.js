@@ -2,12 +2,15 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 
+import cors from 'cors';
+
 const prisma = new PrismaClient();
 
 export default prisma;
 
 const app = express();
 const puerto = 3000
+app.use(cors()); 
 
 app.listen(puerto, () => {
   console.log(`Servidor corriendo en el puerto ${puerto}`);
