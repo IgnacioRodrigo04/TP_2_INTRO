@@ -36,11 +36,28 @@
         </div>
 
         <script>
-          fetch('http://localhost:3000/api/v1/historial')
-          .then(response => response.json())
-          .then(json =>{
-              console.log(json)
-            })
+            document.addEventListener('DOMContentLoaded', function () {
+                const urlParams = new URLSearchParams(window.location.search);
+                const usuarioId = urlParams.get("usuarioId");
+
+                if (usuarioId) {
+                    fetch(`http://localhost:3000/api/v1/usuarios/${usuarioId}/historial`)
+                        .then(response => response.json())
+                        .then(historial_usuario => {
+                            const tableBody = document.getElementById("historial-table-body");
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td>${historial_usuario.kda}</td>
+                                <td>${historial_usuario.partidas_totales}</td>
+                                <td>${historial_usuario.partidas_ganadas}</td>
+                                <td>${historial_usuario.partidas_perdidas}</td>
+                                <td>${historial_usuario.winrate}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        })
+                        .catch(error => console.error('Error al obtener el historial:', error));
+                }
+            });
         </script>
     </body>
 </html>
