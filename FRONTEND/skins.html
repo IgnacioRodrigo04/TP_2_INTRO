@@ -34,34 +34,6 @@
                     <th>Rareza</th>
                     <th>Precio</th>
                 </tr>
-                </thead>
-                <!--Borrar la skin de prueba al final-->
-                <tbody>
-                <tr>
-                    <td>
-                        <figure class="image is-128x128">
-                            <img src="https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/default_generated/weapon_deagle_hy_ddpat_urb_light_png.png" />
-                        </figure>
-                    </td>
-                    <td>Urban DDPAT</td>
-                    <td>Desert Eagle</td>
-                    <td>Industrial Grade</td>
-                    <td>$100</td>
-                </tr>
-                </tbody>
-                <tbody>
-                    <tr>
-                        <td>
-                            <figure class="image is-128x128">
-                                <img src="https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/default_generated/weapon_awp_awp_tempered_light_png.png" />
-                            </figure>
-                        </td>
-                        <td>Chrome Cannon</td>
-                        <td>AWP</td>
-                        <td>Covert</td>
-                        <td>$500</td>
-                    </tr>
-                </thead>
                 <tbody id="skins-table-body">
 
                 </tbody>
@@ -75,13 +47,13 @@
             if (usuarioId) {
                 fetch(`http://localhost:3000/api/v1/usuarios/${usuarioId}/skins`)
                     .then(response => response.json())
-                    .then(usuario => {
-                            console.log(usuario)
-                            console.log(usuario.skins)
-                        if (usuario.skins && usuario.skins.length > 0) {
+                    .then(skins_usuario => {
+                            
+                            console.log(skins_usuario)
+                        if (skins_usuario && skins_usuario.length > 0) {
                             const tableBody = document.getElementById("skins-table-body");
 
-                            usuario.skins.forEach(skin => {
+                            skins_usuario.forEach(skin => {
                                 const row = document.createElement("tr");
                                 row.innerHTML = `
                                 <td>
