@@ -48,8 +48,7 @@
                 fetch(`http://localhost:3000/api/v1/usuarios/${usuarioId}/skins`)
                     .then(response => response.json())
                     .then(skins_usuario => {
-                            
-                            console.log(skins_usuario)
+                          
                         if (skins_usuario && skins_usuario.length > 0) {
                             const tableBody = document.getElementById("skins-table-body");
 
