@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--Se usaron templates de Bulma para hacer este frontend. (https://bulma.io/)-->
 <html>
     <head>
         <title>CS Marketplace</title>
@@ -8,70 +7,57 @@
         <meta name="keywords" content="HTML, CSS, JavaScript">
         <meta name="author" content="Team 9Z">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     </head>
     <body>
         <div class="container is-fluid">
             <nav class="navbar" role="navigation" aria-label="main navigation">
-          
                 <div id="navbarBasicExample" class="navbar-menu">
                     <div class="navbar-start">
-                        <a class="navbar-item" href="index.html">
-                        CS Marketplace
-                        </a>
-            
-                        <a class="navbar-item" href="users.html">
-                        Perfiles
-                        </a>
+                        <a class="navbar-item" href="index.html">CS Marketplace</a>
+                        <a class="navbar-item" href="users.html">Perfiles</a>
                     </div>
-            
                 </div>
             </nav>
             <table class="table is-fullwidth is-striped">
                 <thead>
-                  <tr>
-                    <th>KDA</th>
-                    <th>Partidas Totales</th>
-                    <th>Partida Ganadas</th>
-                    <th>Partidas Perdidas</th>
-                    <th>Porcentaje de Victoria</th>
-                  </tr>
+                    <tr>
+                        <th>KDA</th>
+                        <th>Partidas Totales</th>
+                        <th>Partidas Ganadas</th>
+                        <th>Partidas Perdidas</th>
+                        <th>Winrate</th>
+                    </tr>
                 </thead>
-                <!--Borrar el historial de partida de prueba al final-->
-                <tbody>
-                  <tr>
-                    <td>2.1</td>
-                    <td>4</td>
-                    <td>3</td>
-                    <td>1</td>
-                    <td>75%</td>
-                  </tr>
+                <tbody id="historial-table-body">
+                    <!-- Aquí se agregarán las filas dinámicamente -->
                 </tbody>
             </table>
         </div>
+
         <script>
-          const urlParams = new URLSearchParams(window.location.search);
-            const usuarioId = urlParams.get("usuarioId");
-        
-            if (usuarioId) {
-                fetch(`http://localhost:3000/api/v1/usuarios/${usuarioId}/historial`)
-          
-                .then(response => response.json())
-                .then(historial_usuario =>{
-                    const row = document.createElement("tr")
-                      row.innerHTML = `  
-                      <td>${historial_usuario.kda}</td>
-                      <td>${historial_usuario.partidas_totales}</td>
-                      <td>${historial_usuario.partidas_ganadas}</td>
-                      <td>$${historial_usuario.partidas_perdidas}</td>
-                      <td>$${historial_usuario.winrate}</td>
-                    `;
-                
-                
-            })}
-                  
+            document.addEventListener('DOMContentLoaded', function () {
+                const urlParams = new URLSearchParams(window.location.search);
+                const usuarioId = urlParams.get("usuarioId");
+
+                if (usuarioId) {
+                    fetch(`http://localhost:3000/api/v1/usuarios/${usuarioId}/historial`)
+                        .then(response => response.json())
+                        .then(historial_usuario => {
+                            const tableBody = document.getElementById("historial-table-body");
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td>${historial_usuario.kda}</td>
+                                <td>${historial_usuario.partidas_totales}</td>
+                                <td>${historial_usuario.partidas_ganadas}</td>
+                                <td>${historial_usuario.partidas_perdidas}</td>
+                                <td>${historial_usuario.winrate}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        })
+                        .catch(error => console.error('Error al obtener el historial:', error));
+                }
+            });
         </script>
     </body>
 </html>
