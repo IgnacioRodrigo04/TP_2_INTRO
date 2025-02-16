@@ -52,11 +52,29 @@
             </table>
         </div>
         <script>
-          fetch('http://localhost:3000/api/v1/historial')
-          .then(response => response.json())
-          .then(json =>{
-              console.log(json)
+          const urlParams = new URLSearchParams(window.location.search);
+          const usuarioId = urlParams.get("usuarioId");
+
+          if (usuarioId) {
+            fetch('http://localhost:3000/api/v1/historial/${usuarioId}')
+            .then(response => response.json())
+            .then(json => {
+              const tabla = document.getElementById("historial-table-body");
+
+              json.forEach(partida => {
+                  const row = document.createElement('tr');
+                  row.innerHTML = `
+                    <td>${partida.kda}</td>
+                    <td>${partida.partidas_totales}</td>
+                    <td>${partida.partidas_ganadas}</td>
+                    <td>${partida.partidas_perdidas}</td>
+                    <td>${partida.winrate}%</td>
+                  `;
+                  tabla.appendChild(row);
+              });
             })
+            .catch(error => console.error("Error obteniendo historial:", error));
+          }
         </script>
     </body>
 </html>
