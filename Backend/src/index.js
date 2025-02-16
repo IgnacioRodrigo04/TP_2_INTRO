@@ -42,7 +42,8 @@ app.get('/api/v1/usuarios/:id', async (req, res) => {
         return;
     }
     const usuario = await prisma.usuario.findUnique({
-        where: { id: parseInt(req.params.id) }
+        where: { id: parseInt(req.params.id) },
+        include: { skins: true }
     });
 
     if(usuario === null){
@@ -132,7 +133,9 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
             nombre: nombre,
             plata: plata,
             rango: rango,
-            skins: skins ? { set: skins.map(id => ({ id })) } : undefined,
+            skins: { 
+                set: skins ? skins.map(id => ({ id })) : []
+            },
             historial: historial
         },
         include: { skins: true } 
@@ -155,7 +158,8 @@ app.get('/api/v1/usuarios/:id/skins', async (req, res) =>{
         res.sendStatus(404)
         return;
     }
-    
+
+    res.send(usuario.skins);
 })
 
 app.get('/api/v1/skins', async (req, res) =>{
