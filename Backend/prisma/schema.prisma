@@ -38,6 +38,5 @@ model Skins {
   tipo      String 
   rareza    String
   imagen    String 
-  usuarioId Int? 
-  usuario   Usuario?  @relation(fields: [usuarioId], references: [id], name: "UsuarioSkins")
+  usuarios  Usuario[] @relation("UsuarioSkins")
 }

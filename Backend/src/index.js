@@ -141,7 +141,7 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
             plata: plata,
             rango: rango,
             skins: { 
-                set: skins ? skins.map(id => ({ id })) : []
+                set: skins ? skins.map(id => ({ id })) : undefined
             }
     },
     include: { skins: true, historial: true }
