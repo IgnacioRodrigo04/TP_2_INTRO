@@ -9,29 +9,35 @@ datasource db {
 }
 
 
-model Skins {
-  id Int  @id @default(autoincrement())
-  nombre String
-  precio Decimal @default(100)
-  tipo String 
-  rareza String
-  imagen String 
-}
 
 model Historial {
-  id Int  @id @default(autoincrement())
-  kda String
+  id                Int     @id @default(autoincrement())
+  kda              String
   partidas_totales Decimal @default(0)
   partidas_ganadas Decimal @default(0)
   partidas_perdidas Decimal @default(0)
-  winrate Decimal @default(0)
+  winrate          Decimal @default(0)
+  usuarioId Int?     @unique 
+  usuario   Usuario? @relation(fields: [usuarioId], references: [id])
 }
 
 model Usuario {
-  id Int  @id @default(autoincrement())
-  nombre String
-  plata Decimal @default(0)
-  rango String 
-  coleccion Int[]
-  historial Int[]
+  id         Int       @id @default(autoincrement())
+  nombre     String
+  plata      Decimal   @default(0)
+  rango      String 
+  skins      Skins[]  @relation("UsuarioSkins")
+  historial  Historial? 
+}
+
+
+model Skins {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  precio    Decimal  @default(100)
+  tipo      String 
+  rareza    String
+  imagen    String 
+  usuarioId Int? 
+  usuario   Usuario?  @relation(fields: [usuarioId], references: [id], name: "UsuarioSkins")
 }

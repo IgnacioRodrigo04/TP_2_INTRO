@@ -38,20 +38,20 @@ function validar_numero(numero) {
 
 app.get('/api/v1/usuarios/:id', async (req, res) => {
     if(!validar_numero(req.params.id)){
-        res.sendStatus(400)
+        res.sendStatus(400);
         return;
     }
     const usuario = await prisma.usuario.findUnique({
-        where: {
-            id: parseInt(req.params.id)
-        }
-    })
+        where: { id: parseInt(req.params.id) },
+        include: { skins: true }
+    });
+
     if(usuario === null){
         res.sendStatus(404)
-        return   
+        return;
     }
-    res.json(usuario)
-})
+    res.json(usuario);
+});
 
 
 app.post('/api/v1/usuarios', async (req, res) => {
@@ -60,7 +60,7 @@ app.post('/api/v1/usuarios', async (req, res) => {
         plata: req.body.plata,
         rango: req.body.rango,
         historial: req.body.historial,
-        coleccion: req.body.coleccion
+        skins: req.body.skins
     }
     if(nuevo.nombre === undefined || nuevo.rango === undefined ||  !validar_numero(nuevo.plata) || nuevo.plata < 0 || validar_numero(nuevo.nombre)){
         res.sendStatus(400)
@@ -72,7 +72,7 @@ app.post('/api/v1/usuarios', async (req, res) => {
             nombre: req.body.nombre,
             plata:  req.body.plata,
             rango: req.body.rango,
-            coleccion: req.body.coleccion,
+            skins: req.body.skins,
             historial: req.body.historial
         }
     }) 
@@ -123,23 +123,44 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
         res.sendStatus(404)
         return
     }
-    
+    const { nombre, plata, rango, skins, historial } = req.body;
+
     usuario = await prisma.usuario.update({
         where: {
             id: usuario.id
         },
         data:{
-            nombre: req.body.nombre,
-            plata: req.body.plata,
-            rango: req.body.rango,
-            coleccion: req.body.coleccion,
-            historial: req.body.historial
-        }
-    })
+            nombre: nombre,
+            plata: plata,
+            rango: rango,
+            skins: { 
+                set: skins ? skins.map(id => ({ id })) : []
+            },
+            historial: historial
+        },
+        include: { skins: true } 
+    });
 
     res.send(usuario);
 })
 
+app.get('/api/v1/usuarios/:id/skins', async (req, res) =>{
+    if(!validar_numero(req.params.id)){
+        res.sendStatus(400);
+        return;
+    }
+    const usuario = await prisma.usuario.findUnique({
+        where: { id: parseInt(req.params.id) },
+        include: {skins: true}
+    });
+
+    if(usuario === null){
+        res.sendStatus(404)
+        return;
+    }
+
+    res.send(usuario.skins);
+})
 
 app.get('/api/v1/skins', async (req, res) =>{
     const skins = await prisma.skins.findMany()  
@@ -190,7 +211,6 @@ app.post('/api/v1/skins', async (req, res) =>{
     res.status(201).send(nueva_skin)
 
 })
-
 
 app.delete('/api/v1/skins/:id', async (req, res) => {
     if(!validar_numero(req.params.id)){
