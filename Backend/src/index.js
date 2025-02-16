@@ -119,19 +119,21 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
         res.sendStatus(404)
         return
     }
-    
+    const { nombre, plata, rango, skins, historial } = req.body;
+
     usuario = await prisma.usuario.update({
         where: {
             id: usuario.id
         },
         data:{
-            nombre: req.body.nombre,
-            plata: req.body.plata,
-            rango: req.body.rango,
-            skins: req.body.skins,
-            historial: req.body.historial
-        }
-    })
+            nombre: nombre,
+            plata: plata,
+            rango: rango,
+            skins: skins ? { set: skins.map(id => ({ id })) } : undefined,
+            historial: historial
+        },
+        include: { skins: true } 
+    });
 
     res.send(usuario);
 })

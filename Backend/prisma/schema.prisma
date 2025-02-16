@@ -17,8 +17,8 @@ model Historial {
   partidas_ganadas Decimal @default(0)
   partidas_perdidas Decimal @default(0)
   winrate          Decimal @default(0)
-  usuarioId Int     @unique 
-  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+  usuarioId Int?     @unique 
+  usuario   Usuario? @relation(fields: [usuarioId], references: [id])
 }
 
 model Usuario {
@@ -26,7 +26,7 @@ model Usuario {
   nombre     String
   plata      Decimal   @default(0)
   rango      String 
-  skins      Skins[]  
+  skins      Skins[]  @relation("UsuarioSkins")
   historial  Historial? 
 }
 
@@ -39,5 +39,5 @@ model Skins {
   rareza    String
   imagen    String 
   usuarioId Int? 
-  usuario   Usuario?  @relation(fields: [usuarioId], references: [id])
+  usuario   Usuario?  @relation(fields: [usuarioId], references: [id], name: "UsuarioSkins")
 }
