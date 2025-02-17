@@ -43,15 +43,17 @@
             
         </div>
         <script>
-            
-                fetch(`http://localhost:3000/api/v1/skins`)
+            const urlParams = new URLSearchParams(window.location.search);
+            const usuarioId = urlParams.get("usuarioId");
+            if (usuarioId) {
+                fetch(`http://localhost:3000/api/v1/usuarios/${usuarioId}/skins`)
                     .then(response => response.json())
-                    .then(skins => {
+                    .then(skins_usuario => {
                           
-                        if (skins && skins.length > 0) {
+                        if (skins_usuario && skins_usuario.length > 0) {
                             const tableBody = document.getElementById("skins-table-body");
 
-                            skins.forEach(skin => {
+                            skins_usuario.forEach(skin => {
                                 const row = document.createElement("tr");
                                 row.innerHTML = `
                                 <td>
@@ -69,6 +71,7 @@
                     }
                 })
                 .catch(error => console.error("Error obteniendo skins:", error));
+            }
         </script>
     </body>
 </html>
