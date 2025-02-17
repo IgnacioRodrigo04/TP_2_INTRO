@@ -45,21 +45,21 @@
         <script>
             fetch('http://localhost:3000/api/v1/usuarios')
                 .then(response => response.json())
-                .then(data => {
+                .then(usuarios => {
                     const Tabla = document.getElementById("TablaUser");
-    
-                    data.forEach(usuario => {
+                    usuarios.forEach(usuario => {
+                        
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${usuario.nombre}</td>
                             <td>${usuario.plata}</td>
                             <td>${usuario.rango}</td>
                             <td>
-                                <a href="skins.html?usuarioId=${usuario.id}" class="button is-link" target="_blank">Ver Colección</a>
+                                <a href="skins?usuarioId=${usuario.id}" class="button is-link" >Ver Colección</a>
                                
                             </td>
                             <td>
-                                 <a href="historial_partidas.html?usuarioId=${usuario.id}" class="button is-link" target="_blank">Ver Historial</a>
+                                 <a href="historial_partidas?usuarioId=${usuario.id}" class="button is-link" >Ver Historial</a>
                             </td>
                         `;
                         Tabla.appendChild(row);
