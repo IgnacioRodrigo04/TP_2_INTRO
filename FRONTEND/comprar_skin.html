@@ -1,59 +1,56 @@
 <!DOCTYPE html>
-<!--Se usaron templates de Bulma para hacer este frontend. (https://bulma.io/)-->
 <html>
     <head>
         <title>CS Marketplace</title>
         <meta charset="UTF-8">
-        <meta name="description" content="My first HTML">
-        <meta name="keywords" content="HTML, CSS, JavaScript">
-        <meta name="author" content="Team 9Z">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     </head>
     <body>
         <div class="container is-fluid">
-            <nav class="navbar" role="navigation" aria-label="main navigation">
+            <nav class="navbar" role="navigation">
                 <div id="navbarBasicExample" class="navbar-menu">
                     <div class="navbar-start">
-                        <a class="navbar-item" href="index.html">
-                        CS Marketplace
-                        </a>
-            
-                        <a class="navbar-item" href="users.html">
-                        Usuarios
-                        </a>
+                        <a class="navbar-item" href="index.html">CS Marketplace</a>
+                        <a class="navbar-item" href="users.html">Usuarios</a>
                         <a class="navbar-item" href="skins.html">Skins</a>
+                    </div>
                 </div>
             </nav>
         </div>
+
         <div class="field">
             <label class="label">Id</label>
             <div class="control">
               <input id="id_usuario" class="input" type="text" placeholder="Id del Usuario">
+            </div>
         </div>
-              <div class="field has-addons">
-                <div class="control is-expanded">
-                  <div class="select is-fullwidth">
+
+        <div class="field has-addons">
+            <div class="control is-expanded">
+                <div class="select is-fullwidth">
                     <select id="skins-dropdown" name="skin">
-                      <option value="" disabled selected>Selecciona una skin</option>
+                        <option value="" disabled selected>Selecciona una skin</option>
                     </select>
-                  </div>
                 </div>
-                </div>
-                <div class="control">
-                  <button id="id_skin" type="submit" class="button is-primary" onclick="comprarSkin()">
-                    Comprar
-                </button>
-                </div>
-            <div class="field is-grouped is-grouped-centered">
-                <p class="control">
-                  <a class="button is-light" onclick="limpiarForm()">
-                    Cancelar
-                  </a>
-                </p>
-              </div>
-              <script>
-                document.addEventListener("DOMContentLoaded", function() {
+            </div>
+        </div>
+
+        <div class="control">
+            <button type="submit" class="button is-primary" onclick="comprarSkin(event)">
+                Comprar
+            </button>
+        </div>
+
+        <div class="field is-grouped is-grouped-centered">
+            <p class="control">
+                <a class="button is-light" onclick="limpiarForm()">Cancelar</a>
+            </p>
+        </div>
+
+        <script>
+            // Cargar skins en el dropdown
+            document.addEventListener("DOMContentLoaded", function() {
                 fetch("http://localhost:3000/api/v1/skins")
                 .then(response => response.json())
                 .then(skins => {
@@ -72,24 +69,54 @@
                 .catch(error => console.error("Error cargando skins:", error));
             });
 
-            function comprarSkin(){
-                event.preventDefault();  
+            function comprarSkin(event){
+                event.preventDefault(); 
+
                 const id_usuario = document.getElementById('id_usuario').value;
-                const id_skin = document.getElementById('id_skin').value;
+                const id_skin = document.getElementById('skins-dropdown').value; 
 
-                if(!id_usuario){
-                    alert("ingrese el id del usuario");
-                } else if(!id_skin){
-                    alert("elija la skin a comprar");
-                }return;
+                if (!id_usuario) {
+                    alert("Ingrese el ID del usuario");
+                    return;
+                } else if (!id_skin) {
+                    alert("Elija la skin a comprar");
+                    return;
+                }
 
-                let body = {
-                    id_usuario: parseInt(id_usuario),
+                const body = {
                     id_skin: parseInt(id_skin)
                 };
 
+               
+                fetch(`http://localhost:3000/api/v1/usuarios/${id_usuario}/skins`, {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                })
+                .then(response => {
+                    if (response.status === 200) {
+                        alert('Skin comprada con éxito');
+                        limpiarForm()
+                        return response.json();
+                    } else {
+                        limpiarForm()
+                        alert ("Error al comprar la skin");
+                    }
+                })
+                .then(data => console.log("Compra exitosa:", data))
+                .catch(error => {
+                    console.error("Error en la compra:", error);
+                    alert("Hubo un error al realizar la compra.");
+                });
+            }
 
-            };
-            </script>
+            function limpiarForm() {
+                document.getElementById('id_usuario').value = '';
+                document.getElementById('skins-dropdown').value = '';
+                
+            }
+        </script>
     </body>
 </html>
