@@ -30,7 +30,7 @@
                           <a class="button is-primary" href="crear_usuario.html">
                             <strong>Crear Usuario</strong>
                           </a>
-                          <a class="button is-light">
+                          <a class="button is-light" href="comprar_skin.html">
                             Comprar Skin
                           </a>
                         </div>
@@ -73,11 +73,11 @@
                             <td>${usuario.plata}</td>
                             <td>${usuario.rango}</td>
                             <td>
-                                <a href="skins_usuario?usuarioId=${usuario.id}" class="button is-link" >Ver Colección</a>
+                                <a href="skins_usuario.html?usuarioId=${usuario.id}" class="button is-link" >Ver Colección</a>
                                
                             </td>
                             <td>
-                                 <a href="historial_partidas?usuarioId=${usuario.id}" class="button is-link" >Ver Historial</a>
+                                 <a href="historial_partidas.html?usuarioId=${usuario.id}" class="button is-link" >Ver Historial</a>
                             </td>
                         `;
                         let borrar = document.createElement('td')

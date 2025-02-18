@@ -183,6 +183,41 @@ app.get('/api/v1/usuarios/:id/historial', async (req, res) =>{
     res.send(usuario.historial);
 })
 
+app.put('/api/v1/usuarios/:id/skins', async (req, res) => {
+    if (!validar_numero(req.params.id)) {
+        return res.sendStatus(400);
+    }
+
+    const usuario = await prisma.usuario.findUnique({
+        where: { id: parseInt(req.params.id) },
+        include: { skins: true } 
+    });
+
+    if (!usuario) {
+        return res.status(404).send("Usuario no encontrado");
+    }
+
+    const skin = await prisma.skins.findUnique({
+        where: { id: parseInt(req.body.id_skin) }
+    });
+
+    if (!skin) {
+        return res.status(404).send("Skin no encontrada");
+    }
+
+    const usuario_actualizado = await prisma.usuario.update({
+        where: { id: usuario.id },
+        data: {
+            skins: {
+                connect: { id: skin.id } 
+            }
+        },
+        include: { skins: true }
+    });
+
+    res.send(usuario_actualizado);
+});
+
 app.get('/api/v1/skins', async (req, res) =>{
     const skins = await prisma.skins.findMany()  
     res.json(skins)
