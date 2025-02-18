@@ -27,12 +27,15 @@
                     </div>
                     <div class="navbar-item">
                         <div class="buttons">
-                          <a class="button is-primary" href="crear_usuario.html">
+                            <a class="button is-primary" href="crear_usuario.html">
                             <strong>Crear Usuario</strong>
-                          </a>
-                          <a class="button is-light" href="comprar_skin.html">
+                            </a>
+                            <a class="button is-light" href="comprar_skin.html">
                             Comprar Skin
-                          </a>
+                            </a>
+                            <a class="button is-light" href="agregar_historial.html">
+                            Agregar Historial
+                            </a>
                         </div>
                       </div>
                     </div>
@@ -41,6 +44,7 @@
             <table class="table is-fullwidth is-striped">
                 <thead>
                   <tr>
+                    <th>Id</th>
                     <th>Nombre de Usuario</th>
                     <th>Plata</th>
                     <th>Rango</th>
@@ -69,6 +73,7 @@
                         
                         const row = document.createElement('tr');
                         row.innerHTML = `
+                            <td>${usuario.id}</td>
                             <td>${usuario.nombre}</td>
                             <td>${usuario.plata}</td>
                             <td>${usuario.rango}</td>

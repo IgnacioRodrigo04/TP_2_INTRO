@@ -218,6 +218,41 @@ app.put('/api/v1/usuarios/:id/skins', async (req, res) => {
     res.send(usuario_actualizado);
 });
 
+app.put('/api/v1/usuarios/:id/historial', async (req, res) => {
+    if (!validar_numero(req.params.id)) {
+        return res.sendStatus(400);
+    }
+
+    const usuario = await prisma.usuario.findUnique({
+        where: { id: parseInt(req.params.id) },
+        include: { historial: true } 
+    });
+
+    if (!usuario) {
+        return res.status(404).send("Usuario no encontrado");
+    }
+
+    const historial = await prisma.historial.findUnique({
+        where: { id: parseInt(req.body.id_historial) }
+    });
+
+    if (!historial) {
+        return res.status(404).send("Historial no encontrado");
+    }
+
+    const usuario_actualizado = await prisma.usuario.update({
+        where: { id: usuario.id },
+        data: {
+            historial: {
+                connect: { id: historial.id } 
+            }
+        },
+        include: { historial: true }
+    });
+
+    res.send(usuario_actualizado);
+});
+
 app.get('/api/v1/skins', async (req, res) =>{
     const skins = await prisma.skins.findMany()  
     res.json(skins)

@@ -8,7 +8,7 @@
     </head>
     <body>
         <div class="container is-fluid">
-            <nav class="navbar" role="navigation">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
                 <div id="navbarBasicExample" class="navbar-menu">
                     <div class="navbar-start">
                         <a class="navbar-item" href="index.html">CS Marketplace</a>
@@ -16,8 +16,23 @@
                         <a class="navbar-item" href="skins.html">Skins</a>
                     </div>
                 </div>
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                      <div class="buttons">
+                        <a class="button is-primary" href="crear_usuario.html">
+                          <strong>Crear Usuario</strong>
+                        </a>
+                        <a class="button is-light" href="comprar_skin.html">
+                          Comprar Skin
+                        </a>
+                        <a class="button is-light" href="agregar_historial.html">
+                            Agregar Historial
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             </nav>
-        </div>
 
         <div class="field">
             <label class="label">Id</label>
@@ -49,7 +64,6 @@
         </div>
 
         <script>
-            // Cargar skins en el dropdown
             document.addEventListener("DOMContentLoaded", function() {
                 fetch("http://localhost:3000/api/v1/skins")
                 .then(response => response.json())

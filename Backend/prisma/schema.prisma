@@ -12,7 +12,7 @@ datasource db {
 
 model Historial {
   id                Int     @id @default(autoincrement())
-  kda              String
+  kda              Decimal @default(0)
   partidas_totales Decimal @default(0)
   partidas_ganadas Decimal @default(0)
   partidas_perdidas Decimal @default(0)
