@@ -59,10 +59,8 @@ app.post('/api/v1/usuarios', async (req, res) => {
         nombre: req.body.nombre,
         plata: req.body.plata,
         rango: req.body.rango,
-        historial: req.body.historial,
-        skins: req.body.skins
     }
-    if(nuevo.nombre === undefined || nuevo.rango === undefined ||  !validar_numero(nuevo.plata) || nuevo.plata < 0 || validar_numero(nuevo.nombre)){
+    if(nuevo.nombre === undefined || nuevo.rango === undefined ||  !validar_numero(nuevo.plata) || nuevo.plata < 0 || validar_numero(nuevo.nombre)|| validar_numero(nuevo.rango)){
         res.sendStatus(400)
         return
     }
@@ -72,8 +70,6 @@ app.post('/api/v1/usuarios', async (req, res) => {
             nombre: req.body.nombre,
             plata:  req.body.plata,
             rango: req.body.rango,
-            skins: req.body.skins,
-            historial: req.body.historial
         }
     }) 
     res.status(201).send(nuevo_usuario)
