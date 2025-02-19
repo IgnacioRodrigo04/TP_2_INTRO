@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<!--Se usaron templates de Bulma para hacer este frontend. (https://bulma.io/)-->
+
+<html>
+    <head>
+        <title>CS Marketplace</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="My first HTML">
+        <meta name="keywords" content="HTML, CSS, JavaScript">
+        <meta name="author" content="Team 9Z">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    </head>
+    <body>
+        <div class="container is-fluid">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div id="navbarBasicExample" class="navbar-menu">
+                    <div class="navbar-start">
+                        <a class="navbar-item" href="index.html">
+                        CS Marketplace
+                        </a>
+            
+                        <a class="navbar-item" href="users.html">
+                        Usuarios
+                        </a>
+                        <a class="navbar-item" href="skins.html">Skins</a>
+                    </div>
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a class="button is-primary" href="crear_usuario.html">
+                            <strong>Crear Usuario</strong>
+                            </a>
+                            <a class="button is-light" href="comprar_skin.html">
+                            Comprar Skin
+                            </a>
+                            <a class="button is-light" href="agregar_historial.html">
+                            Agregar Historial
+                            </a>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </nav>
+            <table class="table is-fullwidth is-striped">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Nombre de Usuario</th>
+                    <th>Plata</th>
+                    <th>Rango</th>
+                    <th>Coleccion</th>
+                    <th>Historial</th>
+                    <th>Borrar</th>
+                  </tr>
+                </thead>
+                <tbody id="TablaUser">
+                    <!--Se cargan los usarios aca-->
+                </tbody>
+              </table>
+        </div>
+        <script>
+            window.onload = function(){
+                mostrar_usuarios();
+            }
+            
+            mostrar_usuarios = function(){
+                fetch('http://localhost:3000/api/v1/usuarios')
+                .then(response => response.json())
+                .then(usuarios => {
+                    const Tabla = document.getElementById("TablaUser");
+                    Tabla.innerHTML='';
+                    usuarios.forEach(usuario => {
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${usuario.id}</td>
+                            <td>${usuario.nombre}</td>
+                            <td>${usuario.plata}</td>
+                            <td>${usuario.rango}</td>
+                            <td>
+                                <a href="skins_usuario.html?usuarioId=${usuario.id}" class="button is-link" >Ver Colección</a>
+                               
+                            </td>
+                            <td>
+                                 <a href="historial_partidas.html?usuarioId=${usuario.id}" class="button is-link" >Ver Historial</a>
+                            </td>
+                        `;
+                        let borrar = document.createElement('td')
+                        let button = document.createElement('button');
+                        button.textContent='Borrar';
+                        button.className='button is-danger';
+                        borrar.appendChild(button);
+                        button.onclick = function() { deleteUser(usuario.id, usuario.nombre); };
+
+                        row.appendChild(borrar);
+                        Tabla.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error obteniendo users:', error));
+            }
+            
+            deleteUser = function(id, nombre) {
+                alert("Borrando usuario " +  nombre)
+                fetch('http://localhost:3000/api/v1/usuarios/' + id, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(response => { 
+                    console.log(response);
+                    mostrar_usuarios();
+                })
+            }
+        </script>
+    </body>
+</html>

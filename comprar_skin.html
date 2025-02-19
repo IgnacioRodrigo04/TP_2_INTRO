@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CS Marketplace</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    </head>
+    <body>
+        <div class="container is-fluid">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div id="navbarBasicExample" class="navbar-menu">
+                    <div class="navbar-start">
+                        <a class="navbar-item" href="index.html">CS Marketplace</a>
+                        <a class="navbar-item" href="users.html">Usuarios</a>
+                        <a class="navbar-item" href="skins.html">Skins</a>
+                    </div>
+                </div>
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                      <div class="buttons">
+                        <a class="button is-primary" href="crear_usuario.html">
+                          <strong>Crear Usuario</strong>
+                        </a>
+                        <a class="button is-light" href="comprar_skin.html">
+                          Comprar Skin
+                        </a>
+                        <a class="button is-light" href="agregar_historial.html">
+                            Agregar Historial
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </nav>
+
+        <div class="field">
+            <label class="label">Id</label>
+            <div class="control">
+              <input id="id_usuario" class="input" type="text" placeholder="Id del Usuario">
+            </div>
+        </div>
+
+        <div class="field has-addons">
+            <div class="control is-expanded">
+                <div class="select is-fullwidth">
+                    <select id="skins-dropdown" name="skin">
+                        <option value="" disabled selected>Selecciona una skin</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="control">
+            <button type="submit" class="button is-primary" onclick="comprarSkin(event)">
+                Comprar
+            </button>
+        </div>
+
+        <div class="field is-grouped is-grouped-centered">
+            <p class="control">
+                <a class="button is-light" onclick="limpiarForm()">Cancelar</a>
+            </p>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                fetch("http://localhost:3000/api/v1/skins")
+                .then(response => response.json())
+                .then(skins => {
+                    if (skins && skins.length > 0) {
+                        const dropdown = document.getElementById("skins-dropdown");
+                        dropdown.innerHTML = '<option value="" disabled selected>Selecciona una skin</option>';
+
+                        skins.forEach(skin => {
+                            const option = document.createElement("option");
+                            option.value = skin.id; 
+                            option.textContent = `Skin Id: ${skin.id} - ${skin.nombre}`;
+                            dropdown.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => console.error("Error cargando skins:", error));
+            });
+
+            function comprarSkin(event){
+                event.preventDefault(); 
+
+                const id_usuario = document.getElementById('id_usuario').value;
+                const id_skin = document.getElementById('skins-dropdown').value; 
+
+                if (!id_usuario) {
+                    alert("Ingrese el ID del usuario");
+                    return;
+                } else if (!id_skin) {
+                    alert("Elija la skin a comprar");
+                    return;
+                }
+
+                const body = {
+                    id_skin: parseInt(id_skin)
+                };
+
+               
+                fetch(`http://localhost:3000/api/v1/usuarios/${id_usuario}/skins`, {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                })
+                .then(response => {
+                    if (response.status === 200) {
+                        alert('Skin comprada con éxito');
+                        limpiarForm()
+                        return response.json();
+                    } else {
+                        limpiarForm()
+                        alert ("Error al comprar la skin");
+                    }
+                })
+                .then(data => console.log("Compra exitosa:", data))
+                .catch(error => {
+                    console.error("Error en la compra:", error);
+                    alert("Hubo un error al realizar la compra.");
+                });
+            }
+
+            function limpiarForm() {
+                document.getElementById('id_usuario').value = '';
+                document.getElementById('skins-dropdown').value = '';
+                
+            }
+        </script>
+    </body>
+</html>

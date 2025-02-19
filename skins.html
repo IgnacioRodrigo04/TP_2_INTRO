@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!--Se usaron templates de Bulma para hacer este frontend. (https://bulma.io/)-->
+<html>
+    <head>
+        <title>CS Marketplace</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="My first HTML">
+        <meta name="keywords" content="HTML, CSS, JavaScript">
+        <meta name="author" content="Team 9Z">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    </head>
+    <body>
+        <div class="container is-fluid">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div id="navbarBasicExample" class="navbar-menu">
+                    <div class="navbar-start">
+                        <a class="navbar-item" href="index.html">
+                        CS Marketplace
+                        </a>
+            
+                        <a class="navbar-item" href="users.html">
+                        Usuarios
+                        </a>
+                        <a class="navbar-item" href="skins.html">Skins</a>
+                    </div>
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a class="button is-primary" href="crear_usuario.html">
+                            <strong>Crear Usuario</strong>
+                            </a>
+                            <a class="button is-light" href="comprar_skin.html">
+                            Comprar Skin
+                            </a>
+                            <a class="button is-light" href="agregar_historial.html">
+                            Agregar Historial
+                            </a>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </nav>
+            <table class="table is-fullwidth">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Nombre</th>                                                
+                    <th>Tipo</th>
+                    <th>Rareza</th>
+                    <th>Precio</th>
+                    <th>Borrar</th>
+                </tr>
+                <tbody id="skins-table-body">
+
+                </tbody>
+            </table>
+            <div id="skinsConteiner"> <!--Se cargan las skins aca--></div>
+            
+        </div>
+        <script>
+            window.onload = function(){
+            mostrar_skins();
+            }
+            mostrar_skins = function(){
+                fetch(`http://localhost:3000/api/v1/skins`)
+                    .then(response => response.json())
+                    .then(skins => {
+                        if (skins && skins.length > 0) {
+                            const tableBody = document.getElementById("skins-table-body");
+                            tableBody.innerHTML='';
+                            skins.forEach(skin => {
+                                const row = document.createElement("tr");
+                                row.innerHTML = `
+                                    <td>
+                                        <figure class="image is-128x128">
+                                            <img src="${skin.imagen}" />
+                                        </figure>
+                                    </td>
+                                    <td>${skin.nombre}</td>
+                                    <td>${skin.tipo}</td>
+                                    <td>${skin.rareza}</td>
+                                    <td>$${skin.precio}</td>
+                                `;
+                                let borrar = document.createElement('td');
+                                let button = document.createElement('button');
+                                button.textContent = 'Borrar';
+                                button.className = 'button is-danger';
+                                borrar.appendChild(button);
+                                button.onclick = function() { deleteSkin(skin.id, skin.nombre); };
+                                row.appendChild(borrar);
+                                tableBody.appendChild(row);
+                            });
+                        }
+                    })
+                    .catch(error => console.error("Error obteniendo skins:", error));
+            }
+            deleteSkin = function(id, nombre) {
+                alert("Borrando skin: " +  nombre);
+                fetch('http://localhost:3000/api/v1/skins/' + id, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(response => { 
+                    console.log(response);
+                    mostrar_skins();
+                })
+            }
+        </script>
+    </body>
+</html>
