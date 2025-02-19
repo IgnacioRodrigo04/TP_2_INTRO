@@ -8,6 +8,8 @@ const prisma = new PrismaClient();
 
 export default prisma;
 
+const DATABASE_URL = env("DATABASE_URL")
+
 const app = express();
 const puerto = 3000
 app.use(cors()); 
