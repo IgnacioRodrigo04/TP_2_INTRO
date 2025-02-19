@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<!--Se usaron templates de Bulma para hacer este frontend. (https://bulma.io/)-->
+<html>
+    <head>
+        <title>CS Marketplace</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="My first HTML">
+        <meta name="keywords" content="HTML, CSS, JavaScript">
+        <meta name="author" content="Team 9Z">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    </head>
+    <body>
+        <div class="container is-fluid">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div id="navbarBasicExample" class="navbar-menu">
+                    <div class="navbar-start">
+                        <a class="navbar-item" href="index.html">CS Marketplace</a>
+                        <a class="navbar-item" href="users.html">Usuarios</a>
+                        <a class="navbar-item" href="skins.html">Skins</a>
+                    </div>
+                </div>
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                      <div class="buttons">
+                        <a class="button is-primary" href="crear_usuario.html">
+                          <strong>Crear Usuario</strong>
+                        </a>
+                        <a class="button is-light" href="comprar_skin.html">
+                          Comprar Skin
+                        </a>
+                        <a class="button is-light" href="agregar_historial.html">
+                            Agregar Historial
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </nav>
+        </div>
+        <div class="field">
+            <label class="label">Id</label>
+            <div class="control">
+              <input id="id_usuario" class="input" type="text" placeholder="Id del Usuario">
+          <div class="field">
+            <label class="label">K.D.A</label>
+            <div class="control">
+              <input id="kda" class="input" type="text" placeholder="K.D.A">
+          <div class="field">
+            <label class="label">Partidas Totales</label>
+            <div class="control">
+              <input id="partidas_totales" class="input" type="text" placeholder="Partidas Totales">
+            </div>
+            <div class="field">
+                <label class="label">Partidas Ganadas</label>
+                <div class="control">
+                  <input id="partidas_ganadas" class="input" type="text" placeholder="Partidas Ganadas">
+                </div>
+            <div class="field">
+                <label class="label">Partidas Perdidas</label>
+                <div class="control">
+                    <input id="partidas_perdidas" class="input" type="text" placeholder="Partidas Perdidas">
+                </div>
+            <div class="field">
+                <label class="label">Winrate</label>
+                <div class="control">
+                    <input id="winrate" class="input" type="text" placeholder="Winrate">
+                </div>
+            <div class="field is-grouped is-grouped-centered">
+                <p class="control">
+                  <button id="crear_historial"class="button is-primary">
+                    Crear
+                  </button>
+                </p>
+                <p class="control">
+                  <a class="button is-light" onclick="limpiarForm()">
+                    Cancelar
+                  </a>
+                </p>
+              </div>
+            <script>
+                document.getElementById('crear_historial').addEventListener('click', function(event) {
+                    crearHistorial(event);
+                });
+                function crearHistorial(event) {
+                    event.preventDefault();  
+                    const kda= document.getElementById('kda').value;
+                    const partidas_totales= document.getElementById('partidas_totales').value;
+                    const partidas_ganadas = document.getElementById('partidas_ganadas').value;
+                    const partidas_perdidas = document.getElementById('partidas_perdidas').value;
+                    const winrate = document.getElementById('winrate').value;
+            
+                    if (!kda || !partidas_totales || !partidas_ganadas || !partidas_perdidas || !winrate) {
+                        alert("Todos los campos son obligatorios.");
+                    }
+
+                    if(isNaN(partidas_totales) || partidas_totales < 0 || isNaN(partidas_ganadas) || partidas_ganadas < 0 || isNaN(partidas_perdidas) || partidas_perdidas < 0 
+                    || isNaN(winrate) || winrate < 0){
+                        alert("ingrese correctamente los campos");
+                        return;
+                    }
+            
+                    let body = {
+                        kda: parseFloat(kda),
+                        partidas_totales: parseFloat(partidas_totales),
+                        partidas_ganadas: parseFloat(partidas_ganadas),
+                        partidas_perdidas: parseFloat(partidas_perdidas),
+                        winrate: parseFloat(winrate)
+                    };
+            
+                    fetch('http://localhost:3000/api/v1/historial', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    })
+                    .then(response => {
+                    if (response.status === 201) {
+                        response.json().then(historial => {
+                            const idHistorial = historial.id; 
+                            agregar_historial_usuario(idHistorial);
+                            
+                        });
+                    } else {
+                        alert('Error al crear el Historial');
+                    }
+                    limpiarForm()
+                    })
+                }
+
+                function agregar_historial_usuario (idHistorial){ 
+                    const id_usuario = document.getElementById('id_usuario').value
+
+                    if (!id_usuario) {
+                        alert("Ingrese el ID del usuario");
+                        return;
+                    } 
+
+                    const body = {
+                        id_historial: parseInt(idHistorial)
+                    };
+
+                
+                    fetch(`http://localhost:3000/api/v1/usuarios/${id_usuario}/historial`, {
+                        method: "PUT",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    })
+                    .then(response => {
+                        if (response.status === 200) {
+                            alert('Historial asignado con éxito');
+                            limpiarForm()
+                            return response.json();
+                        } else {
+                            limpiarForm()
+                            alert ("Error asignar el historial");
+                        }
+                    })
+                }
+            
+                function limpiarForm() {
+                   document.getElementById('kda').value = '' 
+                    document.getElementById('partidas_totales').value = '' 
+                    document.getElementById('partidas_ganadas').value = '' 
+                    document.getElementById('partidas_perdidas').value = '' 
+                    document.getElementById('winrate').value = ''
+                }
+            </script>
+    </body>
+</html>

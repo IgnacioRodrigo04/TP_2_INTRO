@@ -2,12 +2,15 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 
+import cors from 'cors';
+
 const prisma = new PrismaClient();
 
 export default prisma;
 
 const app = express();
 const puerto = 3000
+app.use(cors()); 
 
 app.listen(puerto, () => {
   console.log(`Servidor corriendo en el puerto ${puerto}`);
@@ -35,20 +38,20 @@ function validar_numero(numero) {
 
 app.get('/api/v1/usuarios/:id', async (req, res) => {
     if(!validar_numero(req.params.id)){
-        res.sendStatus(400)
+        res.sendStatus(400);
         return;
     }
     const usuario = await prisma.usuario.findUnique({
-        where: {
-            id: parseInt(req.params.id)
-        }
-    })
+        where: { id: parseInt(req.params.id) },
+        include: { skins: true, historial: true}
+    });
+
     if(usuario === null){
         res.sendStatus(404)
-        return   
+        return;
     }
-    res.json(usuario)
-})
+    res.json(usuario);
+});
 
 
 app.post('/api/v1/usuarios', async (req, res) => {
@@ -56,11 +59,8 @@ app.post('/api/v1/usuarios', async (req, res) => {
         nombre: req.body.nombre,
         plata: req.body.plata,
         rango: req.body.rango,
-        historial: req.body.historial,
-        coleccion: req.body.coleccion
     }
-    if(nuevo.nombre === undefined || nuevo.rango === undefined ||  !validar_numero(nuevo.plata) || nuevo.plata < 0 || validar_numero(nuevo.nombre)
-    ||  !Array.isArray(nuevo.coleccion) || !nuevo.coleccion.every(validar_numero)){
+    if(nuevo.nombre === undefined || nuevo.rango === undefined ||  !validar_numero(nuevo.plata) || nuevo.plata < 0 || validar_numero(nuevo.nombre)|| validar_numero(nuevo.rango)){
         res.sendStatus(400)
         return
     }
@@ -70,8 +70,6 @@ app.post('/api/v1/usuarios', async (req, res) => {
             nombre: req.body.nombre,
             plata:  req.body.plata,
             rango: req.body.rango,
-            coleccion: req.body.coleccion,
-            historial: req.body.historial
         }
     }) 
     res.status(201).send(nuevo_usuario)
@@ -121,23 +119,139 @@ app.put('/api/v1/usuarios/:id' , async (req, res) =>{
         res.sendStatus(404)
         return
     }
-    
+    const { nombre, plata, rango, skins, historial } = req.body;
+
+    const historialId = historial
+    if (historialId) {
+        await prisma.historial.update({
+          where: { id: historialId },
+          data: { usuarioId: usuario.id }  
+        });
+      }
     usuario = await prisma.usuario.update({
         where: {
             id: usuario.id
         },
         data:{
-            nombre: req.body.nombre,
-            plata: req.body.plata,
-            rango: req.body.rango,
-            coleccion: req.body.coleccion,
-            historial: req.body.historial
-        }
-    })
+            nombre: nombre,
+            plata: plata,
+            rango: rango,
+            skins: { 
+                set: skins ? skins.map(id => ({ id })) : undefined
+            }
+    },
+    include: { skins: true, historial: true }
+        
+    });
 
     res.send(usuario);
 })
 
+app.get('/api/v1/usuarios/:id/skins', async (req, res) =>{
+    if(!validar_numero(req.params.id)){
+        res.sendStatus(400);
+        return;
+    }
+    const usuario = await prisma.usuario.findUnique({
+        where: { id: parseInt(req.params.id) },
+        include: {skins: true}
+    });
+
+    if(usuario === null){
+        res.sendStatus(404)
+        return;
+    }
+
+    res.send(usuario.skins);
+})
+
+app.get('/api/v1/usuarios/:id/historial', async (req, res) =>{
+    if(!validar_numero(req.params.id)){
+        res.sendStatus(400);
+        return;
+    }
+    const usuario = await prisma.usuario.findUnique({
+        where: { id: parseInt(req.params.id) },
+        include: {historial: true}
+    });
+
+    if(usuario === null){
+        res.sendStatus(404)
+        return;
+    }
+
+    res.send(usuario.historial);
+})
+
+app.put('/api/v1/usuarios/:id/skins', async (req, res) => {
+    if (!validar_numero(req.params.id)) {
+        return res.sendStatus(400);
+    }
+
+    const usuario = await prisma.usuario.findUnique({
+        where: { id: parseInt(req.params.id) },
+        include: { skins: true } 
+    });
+
+    if (!usuario) {
+        return res.status(404).send("Usuario no encontrado");
+    }
+
+    const skin = await prisma.skins.findUnique({
+        where: { id: parseInt(req.body.id_skin) }
+    });
+
+    if (!skin) {
+        return res.status(404).send("Skin no encontrada");
+    }
+
+    const usuario_actualizado = await prisma.usuario.update({
+        where: { id: usuario.id },
+        data: {
+            skins: {
+                connect: { id: skin.id } 
+            }
+        },
+        include: { skins: true }
+    });
+
+    res.send(usuario_actualizado);
+});
+
+app.put('/api/v1/usuarios/:id/historial', async (req, res) => {
+    if (!validar_numero(req.params.id)) {
+        return res.sendStatus(400);
+    }
+
+    const usuario = await prisma.usuario.findUnique({
+        where: { id: parseInt(req.params.id) },
+        include: { historial: true } 
+    });
+
+    if (!usuario) {
+        return res.status(404).send("Usuario no encontrado");
+    }
+
+    const historial = await prisma.historial.findUnique({
+        where: { id: parseInt(req.body.id_historial) }
+    });
+
+    if (!historial) {
+        return res.status(404).send("Historial no encontrado");
+    }
+
+    const usuario_actualizado = await prisma.usuario.update({
+        where: { id: usuario.id },
+        data: {
+            historial: {
+                connect: { id: historial.id } 
+            }
+        },
+        include: { historial: true }
+    });
+
+    res.send(usuario_actualizado);
+});
 
 app.get('/api/v1/skins', async (req, res) =>{
     const skins = await prisma.skins.findMany()  
@@ -188,7 +302,6 @@ app.post('/api/v1/skins', async (req, res) =>{
     res.status(201).send(nueva_skin)
 
 })
-
 
 app.delete('/api/v1/skins/:id', async (req, res) => {
     if(!validar_numero(req.params.id)){

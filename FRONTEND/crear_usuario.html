@@ -16,94 +16,97 @@
                 <div id="navbarBasicExample" class="navbar-menu">
                     <div class="navbar-start">
                         <a class="navbar-item" href="index.html">CS Marketplace</a>
+                        <a class="navbar-item" href="users.html">Usuarios</a>
+                        <a class="navbar-item" href="skins.html">Skins</a>
                     </div>
-                    <div class="navbar-end">
-                        <div class="navbar-item">
-                            <div class="buttons">
-                                <a class="button is-primary" href="crear_usuario.html">
-                                    <strong>Sign up</strong>
-                                </a>
-                                <a class="button is-light" href="login_usuario.html">
-                                    Log in
-                                </a>
-                            </div>
-                        </div>
+                </div>
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                      <div class="buttons">
+                        <a class="button is-primary" href="crear_usuario.html">
+                          <strong>Crear Usuario</strong>
+                        </a>
+                        <a class="button is-light" href="comprar_skin.html">
+                          Comprar Skin
+                        </a>
+                        <a class="button is-light" href="agregar_historial.html">
+                            Agregar Historial
+                        </a>
+                      </div>
                     </div>
+                  </div>
                 </div>
             </nav>
-
-            <section class="section is-medium">
-                <div class="container is-max-desktop">
-                    <form class="box">
-                        <div class="field">
-                            <label class="label">Nombre de Usuario</label>
-                            <div class="control">
-                                <input id="nombre" class="input" type="text" id="nombre" name="nombre">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="label">E-mail</label>
-                            <div class="control">
-                                <input id="email" class="input" type="email" id="email" name="email">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="label">Contraseña</label>
-                            <div class="control">
-                                <input id="password" class="input" type="password" id="password" name="password">
-                            </div>
-                        </div>
-                        <div class="field is-grouped is-grouped-centered">
-                            <p class="control">
-                                <button class="button is-fullwidth is-light" type="button" onclick="createUser()">Crear</button>
-                            </p>
-                        </div>
-                    </form>
-                </div>
-            </section>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Email</th>
-                        <th>Plata</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
         </div>
-
-    </body>
-
-    <script>
-        function createUser() {
-            const nombre = document.getElementById('nombre').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+        <div class="field">
+            <label class="label">Nombre</label>
+            <div class="control">
+              <input id="nombre" class="input" type="text" placeholder="Nombre">
+          <div class="field">
+            <label class="label">Plata</label>
+            <div class="control">
+              <input id="plata" class="input" type="text" placeholder="Plata">
+          <div class="field">
+            <label class="label">Rango</label>
+            <div class="control">
+              <input id="rango" class="input" type="text" placeholder="Rango">
+            </div>
+            <div class="field is-grouped is-grouped-centered">
+                <p class="control">
+                  <button class="button is-primary" onclick="crearUsuario()">
+                    Crear
+                  </button>
+                </p>
+                <p class="control">
+                  <a class="button is-light" onclick="limpiarForm()">
+                    Cancelar
+                  </a>
+                </p>
+              </div>
+              <script>
+                function crearUsuario() {
+                    event.preventDefault();  
+                    const nombre = document.getElementById('nombre').value;
+                    const plata = document.getElementById('plata').value;
+                    const rango = document.getElementById('rango').value;
             
-            let body = {
-                name: nombre,
-                mail: email,
-                contrasenia: password
-            };
+                    if (!nombre || !plata || !rango) {
+                        alert("Todos los campos son obligatorios.");
+                    }
+
+                    if(isNaN(plata) || plata < 0){
+                        alert("Ingrese plata como numero");
+                        return;
+                    }
             
-            fetch("http://localhost:3000/api/v1/usuarios", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application.json'
-                },
-                body: JSON.stringify(body)
-            }) .then(response => {
-                if (response.status === 201) {
-                    alert('Usuario creado con exito');
-                    clearForm();
-                } else {
-                    alert('Error al crear usuario')
+                    let body = {
+                        nombre: nombre,
+                        plata: parseFloat(plata),
+                        rango: rango
+                    };
+            
+                    fetch('http://localhost:3000/api/v1/usuarios', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    })
+                    .then(response => {
+                        if(response.status === 201){
+                            alert('Usuario creado con éxito');
+                            limpiarForm();
+                        } else {
+                            alert('Error al crear el usuario');
+                        }
+                    })
                 }
-            })
-            console.log('Usuario creado:', { nombre, email, password });
-        }
-    </script>
+            
+                function limpiarForm() {
+                    document.getElementById('nombre').value = '';
+                    document.getElementById('plata').value = '';
+                    document.getElementById('rango').value = '';
+                }
+            </script>
+    </body>
 </html>

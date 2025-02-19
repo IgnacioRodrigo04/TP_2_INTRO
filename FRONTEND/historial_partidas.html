@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CS Marketplace</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="My first HTML">
+        <meta name="keywords" content="HTML, CSS, JavaScript">
+        <meta name="author" content="Team 9Z">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    </head>
+    <body>
+        <div class="container is-fluid">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div id="navbarBasicExample" class="navbar-menu">
+                    <div class="navbar-start">
+                        <a class="navbar-item" href="index.html">CS Marketplace</a>
+                        <a class="navbar-item" href="users.html">Usuarios</a>
+                        <a class="navbar-item" href="skins.html">Skins</a>
+                    </div>
+                    <div class="navbar-item">
+                        <div class="buttons">
+                          <a class="button is-primary" href="crear_usuario.html">
+                            <strong>Crear Usuario</strong>
+                          </a>
+                          <a class="button is-light" href="comprar_skin.html">
+                            Comprar Skin
+                          </a>
+                          <a class="button is-light" href="agregar_historial.html">
+                            Agregar Historial
+                        </a>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </nav>
+            <table class="table is-fullwidth is-striped">
+                <thead>
+                    <tr>
+                        <th>KDA</th>
+                        <th>Partidas Totales</th>
+                        <th>Partidas Ganadas</th>
+                        <th>Partidas Perdidas</th>
+                        <th>Winrate</th>
+                    </tr>
+                </thead>
+                <tbody id="historial-table-body">
+                    <!-- Aquí se agregarán las filas dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const urlParams = new URLSearchParams(window.location.search);
+                const usuarioId = urlParams.get("usuarioId");
+
+                if (usuarioId) {
+                    fetch(`http://localhost:3000/api/v1/usuarios/${usuarioId}/historial`)
+                        .then(response => response.json())
+                        .then(historial_usuario => {
+                            const tableBody = document.getElementById("historial-table-body");
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td>${historial_usuario.kda}</td>
+                                <td>${historial_usuario.partidas_totales}</td>
+                                <td>${historial_usuario.partidas_ganadas}</td>
+                                <td>${historial_usuario.partidas_perdidas}</td>
+                                <td>${historial_usuario.winrate}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        })
+                        .catch(error => console.error('Error al obtener el historial:', error));
+                }
+            });
+        </script>
+    </body>
+</html>
