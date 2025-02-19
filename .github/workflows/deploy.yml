@@ -9,13 +9,15 @@ permissions:
   contents: write
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Deploy
-            uses: peaceiris/actions-gh-pages@v3
-            with:
-                github_token: ${{ secrets.GITHUB_TOKEN }}
-                publish_dir: ./FRONTEND
-                publish_branch: gh-pages
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v3
 
+      - name: Desplegar en GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: FRONTEND/ 
