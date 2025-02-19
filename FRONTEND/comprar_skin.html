@@ -31,36 +31,42 @@
                       </div>
                     </div>
                   </div>
-                </div>
             </nav>
-
-        <div class="field">
-            <label class="label">Id</label>
-            <div class="control">
-              <input id="id_usuario" class="input" type="text" placeholder="Id del Usuario">
-            </div>
         </div>
 
-        <div class="field has-addons">
-            <div class="control is-expanded">
-                <div class="select is-fullwidth">
-                    <select id="skins-dropdown" name="skin">
-                        <option value="" disabled selected>Selecciona una skin</option>
-                    </select>
+        <div class="container is-fluid">
+            <div class="field">
+                <label class="label">Id</label>
+                <div class="control">
+                <input id="id_usuario" class="input" type="text" placeholder="Id del Usuario">
                 </div>
             </div>
-        </div>
 
-        <div class="control">
-            <button type="submit" class="button is-primary" onclick="comprarSkin(event)">
-                Comprar
-            </button>
-        </div>
+            <div class="field has-addons">
+                <div class="control is-expanded">
+                    <div class="select is-fullwidth">
+                        <select id="skins-dropdown" name="skin">
+                            <option value="" disabled selected>Selecciona una skin</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
-        <div class="field is-grouped is-grouped-centered">
-            <p class="control">
-                <a class="button is-light" onclick="limpiarForm()">Cancelar</a>
-            </p>
+            <div class="container is-fluid mt-5">
+                <div class="field is-grouped is-grouped-centered">
+                    <div class="control">
+                        <button type="submit" class="button is-primary" onclick="comprarSkin(event)">
+                            Comprar
+                        </button>
+                    </div>
+
+                    <div class="field is-grouped is-grouped-centered">
+                        <p class="control">
+                            <a class="button is-light" onclick="limpiarForm()">Cancelar</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <script>
