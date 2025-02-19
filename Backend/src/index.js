@@ -12,6 +12,12 @@ const app = express();
 const puerto = 3000
 app.use(cors()); 
 
+const corsOptions = {
+    origin: 'https://IgnacioRodrigo04.github.io',  
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
+    credentials: true,
+};
+
 app.listen(puerto, () => {
   console.log(`Servidor corriendo en el puerto ${puerto}`);
 })
