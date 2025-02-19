@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--Se usaron templates de Bulma para hacer este frontend. (https://bulma.io/)-->
 <html>
     <head>
         <title>CS Marketplace</title>
@@ -9,13 +8,17 @@
         <meta name="author" content="Team 9Z">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+        <link rel="stylesheet" href="styles.css">
     </head>
     <body>
         <div class="container is-fluid">
             <nav class="navbar" role="navigation" aria-label="main navigation">
                 <div id="navbarBasicExample" class="navbar-menu">
                     <div class="navbar-start">
-                        <a class="navbar-item" href="index.html">CS Marketplace</a>
+                        <a class="navbar-item" href="index.html">
+                            <img src="./TP_2_Intro_logo/logo1.png" style="max-height: 40px; margin-right: 5px;">
+                            Home
+                        </a>
                         <a class="navbar-item" href="users.html">Usuarios</a>
                         <a class="navbar-item" href="skins.html">Skins</a>
                     </div>
@@ -23,90 +26,101 @@
                 <div class="navbar-end">
                     <div class="navbar-item">
                       <div class="buttons">
-                        <a class="button is-primary" href="crear_usuario.html">
-                          <strong>Crear Usuario</strong>
+                        <a class="button is-light is-rounded is-medium" href="crear_usuario.html">
+                            Crear Usuario
                         </a>
-                        <a class="button is-light" href="comprar_skin.html">
-                          Comprar Skin
-                        </a>
-                        <a class="button is-light" href="agregar_historial.html">
+                        <a class="button is-light is-rounded is-medium" href="comprar_skin.html">
+                            Comprar Skin
+                          </a>
+                          <a class="button is-light is-rounded is-medium" href="agregar_historial.html">
                             Agregar Historial
-                        </a>
+                          </a>
                       </div>
                     </div>
                   </div>
-                </div>
             </nav>
         </div>
-        <div class="field">
-            <label class="label">Nombre</label>
-            <div class="control">
-              <input id="nombre" class="input" type="text" placeholder="Nombre">
-          <div class="field">
-            <label class="label">Plata</label>
-            <div class="control">
-              <input id="plata" class="input" type="text" placeholder="Plata">
-          <div class="field">
-            <label class="label">Rango</label>
-            <div class="control">
-              <input id="rango" class="input" type="text" placeholder="Rango">
+
+        <div class="container is-fluid">
+            <div class="field">
+                <label class="label">Nombre</label>
+                <div class="control">
+                    <input id="nombre" class="input" type="text" placeholder="Nombre">
+                </div>
             </div>
+            <div class="field">
+                <label class="label">Plata</label>
+            <div class="control">
+                    <input id="plata" class="input" type="text" placeholder="Plata">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Rango</label>
+                <div class="control">
+                    <input id="rango" class="input" type="text" placeholder="Rango">
+                </div>
+            </div>
+        </div>
+        
+        <div class="container is-fluid mt-5">
             <div class="field is-grouped is-grouped-centered">
                 <p class="control">
-                  <button class="button is-primary" onclick="crearUsuario()">
-                    Crear
-                  </button>
+                    <button class="button is-primary" onclick="crearUsuario()">
+                        Crear
+                    </button>
                 </p>
                 <p class="control">
-                  <a class="button is-light" onclick="limpiarForm()">
-                    Cancelar
-                  </a>
+                    <a class="button is-light" onclick="limpiarForm()">
+                        Cancelar
+                    </a>
                 </p>
-              </div>
-              <script>
-                function crearUsuario() {
-                    event.preventDefault();  
-                    const nombre = document.getElementById('nombre').value;
-                    const plata = document.getElementById('plata').value;
-                    const rango = document.getElementById('rango').value;
-            
-                    if (!nombre || !plata || !rango) {
-                        alert("Todos los campos son obligatorios.");
-                    }
+            </div>
+        </div>
 
-                    if(isNaN(plata) || plata < 0){
-                        alert("Ingrese plata como numero");
-                        return;
+        <script>
+            function crearUsuario() {
+                event.preventDefault();  
+                const nombre = document.getElementById('nombre').value;
+                const plata = document.getElementById('plata').value;
+                const rango = document.getElementById('rango').value;
+        
+                if (!nombre || !plata || !rango) {
+                    alert("Todos los campos son obligatorios.");
+                }
+
+                if(isNaN(plata) || plata < 0){
+                    alert("Ingrese plata como numero");
+                    return;
+                }
+        
+                let body = {
+                    nombre: nombre,
+                    plata: parseFloat(plata),
+                    rango: rango
+                };
+        
+                fetch('http://localhost:3000/api/v1/usuarios', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                })
+                .then(response => {
+                    if(response.status === 201){
+                        alert('Usuario creado con éxito');
+                        limpiarForm();
+                    } else {
+                        alert('Error al crear el usuario');
                     }
-            
-                    let body = {
-                        nombre: nombre,
-                        plata: parseFloat(plata),
-                        rango: rango
-                    };
-            
-                    fetch('http://localhost:3000/api/v1/usuarios', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(body)
-                    })
-                    .then(response => {
-                        if(response.status === 201){
-                            alert('Usuario creado con éxito');
-                            limpiarForm();
-                        } else {
-                            alert('Error al crear el usuario');
-                        }
-                    })
-                }
-            
-                function limpiarForm() {
-                    document.getElementById('nombre').value = '';
-                    document.getElementById('plata').value = '';
-                    document.getElementById('rango').value = '';
-                }
-            </script>
+                })
+            }
+        
+            function limpiarForm() {
+                document.getElementById('nombre').value = '';
+                document.getElementById('plata').value = '';
+                document.getElementById('rango').value = '';
+            }
+        </script>
     </body>
 </html>

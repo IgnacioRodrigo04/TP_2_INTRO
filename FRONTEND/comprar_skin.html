@@ -3,15 +3,22 @@
     <head>
         <title>CS Marketplace</title>
         <meta charset="UTF-8">
+        <meta name="description" content="My first HTML">
+        <meta name="keywords" content="HTML, CSS, JavaScript">
+        <meta name="author" content="Team 9Z">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+        <link rel="stylesheet" href="styles.css">
     </head>
     <body>
         <div class="container is-fluid">
             <nav class="navbar" role="navigation" aria-label="main navigation">
                 <div id="navbarBasicExample" class="navbar-menu">
                     <div class="navbar-start">
-                        <a class="navbar-item" href="index.html">CS Marketplace</a>
+                        <a class="navbar-item" href="index.html">
+                            <img src="./TP_2_Intro_logo/logo1.png" style="max-height: 40px; margin-right: 5px;">
+                            Home
+                        </a>
                         <a class="navbar-item" href="users.html">Usuarios</a>
                         <a class="navbar-item" href="skins.html">Skins</a>
                     </div>
@@ -19,48 +26,54 @@
                 <div class="navbar-end">
                     <div class="navbar-item">
                       <div class="buttons">
-                        <a class="button is-primary" href="crear_usuario.html">
-                          <strong>Crear Usuario</strong>
+                        <a class="button is-light is-rounded is-medium" href="crear_usuario.html">
+                            Crear Usuario
                         </a>
-                        <a class="button is-light" href="comprar_skin.html">
-                          Comprar Skin
-                        </a>
-                        <a class="button is-light" href="agregar_historial.html">
+                        <a class="button is-light is-rounded is-medium" href="comprar_skin.html">
+                            Comprar Skin
+                          </a>
+                          <a class="button is-light is-rounded is-medium" href="agregar_historial.html">
                             Agregar Historial
-                        </a>
+                          </a>
                       </div>
                     </div>
                   </div>
-                </div>
             </nav>
-
-        <div class="field">
-            <label class="label">Id</label>
-            <div class="control">
-              <input id="id_usuario" class="input" type="text" placeholder="Id del Usuario">
-            </div>
         </div>
 
-        <div class="field has-addons">
-            <div class="control is-expanded">
-                <div class="select is-fullwidth">
-                    <select id="skins-dropdown" name="skin">
-                        <option value="" disabled selected>Selecciona una skin</option>
-                    </select>
+        <div class="container is-fluid">
+            <div class="field">
+                <label class="label">Id</label>
+                <div class="control">
+                <input id="id_usuario" class="input" type="text" placeholder="Id del Usuario">
                 </div>
             </div>
-        </div>
 
-        <div class="control">
-            <button type="submit" class="button is-primary" onclick="comprarSkin(event)">
-                Comprar
-            </button>
-        </div>
+            <div class="field has-addons">
+                <div class="control is-expanded">
+                    <div class="select is-fullwidth">
+                        <select id="skins-dropdown" name="skin">
+                            <option value="" disabled selected>Selecciona una skin</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
-        <div class="field is-grouped is-grouped-centered">
-            <p class="control">
-                <a class="button is-light" onclick="limpiarForm()">Cancelar</a>
-            </p>
+            <div class="container is-fluid">
+                <div class="field is-grouped is-grouped-centered">
+                    <div class="control">
+                        <button type="submit" class="button is-primary" onclick="comprarSkin(event)">
+                            Comprar
+                        </button>
+                    </div>
+
+                    <div class="field is-grouped is-grouped-centered">
+                        <p class="control">
+                            <a class="button is-light" onclick="limpiarForm()">Cancelar</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <script>
