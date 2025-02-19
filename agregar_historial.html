@@ -110,7 +110,7 @@
                         winrate: parseFloat(winrate)
                     };
             
-                    fetch('http://localhost:3000/api/v1/historial', {
+                    fetch('http://tp-2-intro.onrender.com/api/v1/historial', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -144,7 +144,7 @@
                     };
 
                 
-                    fetch(`http://localhost:3000/api/v1/usuarios/${id_usuario}/historial`, {
+                    fetch(`http://tp-2-intro.onrender.com/api/v1/usuarios/${id_usuario}/historial`, {
                         method: "PUT",
                         headers: {
                             'Content-Type': 'application/json'
