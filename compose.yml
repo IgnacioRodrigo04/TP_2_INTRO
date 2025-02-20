@@ -25,20 +25,20 @@ services:
     environment:
       DATABASE_URL: postgresql://Intro:contraseña_database@database:5432/Skins_cs
     volumes:
-      - ./Backend:/app
+      - ./Backend:/app  
     command: ["npm", "run", "dev"]
 
   frontend:
     build:
       context: .
-      dockerfile: ./FRONTEND/Dockerfile  
+      dockerfile: ./FRONTEND/Dockerfile 
     container_name: FRONTEND
     depends_on:
       - backend
     ports:
       - "8000:8000"
     volumes:
-      - ./FRONTEND:/app
+      - ./FRONTEND:/app  
     command: ["npm", "start"]
 
 volumes:

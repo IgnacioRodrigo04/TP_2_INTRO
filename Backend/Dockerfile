@@ -8,7 +8,7 @@ RUN npm install
 
 RUN npm install -g nodemon
 
-COPY . .
+COPY ./Backend ./
 
 EXPOSE 3000
 
