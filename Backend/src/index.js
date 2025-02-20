@@ -12,13 +12,19 @@ const DATABASE_URL = process.env.DATABASE_URL;
 
 const app = express();
 const puerto = 3000
-app.use(cors()); 
+
+const corsOptions = {
+    origin: "https://ignaciorodrigo04.github.io/TP_2_INTRO/",
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+  };
+  
+app.use(cors(corsOptions));
+app.use(express.json())
 
 app.listen(puerto, () => {
   console.log(`Servidor corriendo en el puerto ${puerto}`);
 })
-
-app.use(express.json())
 
 
 app.get('/', (req, res) => {
