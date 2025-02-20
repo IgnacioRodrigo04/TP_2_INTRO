@@ -14,7 +14,7 @@ const app = express();
 const puerto = 3000
 
 const corsOptions = {
-    origin: "https://ignaciorodrigo04.github.io",
+    origin: "https://ignaciorodrigo04.github.io/TP_2_INTRO/",
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: "Content-Type,Authorization",
   };
