@@ -25,7 +25,8 @@ services:
     environment:
       DATABASE_URL: postgresql://Intro:contraseña_database@database:5432/Skins_cs
     volumes:
-      - ./Backend:/app  
+    - ./Backend:/app
+    - /app/node_modules  
     command: ["npm", "run", "dev"]
 
   frontend:
