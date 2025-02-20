@@ -64,7 +64,7 @@
             }
             
             mostrar_usuarios = function(){
-                fetch('https://tp-2-intro-yr9m.onrender.com/api/v1/usuarios')
+                fetch('http://localhost:3000/api/v1/usuarios')
                 .then(response => response.json())
                 .then(usuarios => {
                     const Tabla = document.getElementById("TablaUser");
@@ -101,7 +101,7 @@
             
             deleteUser = function(id, nombre) {
                 alert("Borrando usuario " +  nombre)
-                fetch('https://tp-2-intro-yr9m.onrender.com/api/v1/usuarios/' + id, {
+                fetch('http://localhost:3000/api/v1/usuarios/' + id, {
                     method: 'DELETE'
                 })
                 .then(response => response.json())
