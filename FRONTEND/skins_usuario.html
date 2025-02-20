@@ -61,7 +61,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const usuarioId = urlParams.get("usuarioId");
             if (usuarioId) {
-                fetch(`http://localhost:3000/api/v1/usuarios/${usuarioId}/skins`)
+                fetch(`https://tp-2-intro-yr9m.onrender.com/api/v1/usuarios/${usuarioId}/skins`)
                     .then(response => response.json())
                     .then(skins_usuario => {
                           

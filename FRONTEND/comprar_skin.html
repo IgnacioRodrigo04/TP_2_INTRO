@@ -78,7 +78,7 @@
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                fetch("http://localhost:3000/api/v1/skins")
+                fetch("https://tp-2-intro-yr9m.onrender.com/api/v1/skins")
                 .then(response => response.json())
                 .then(skins => {
                     if (skins && skins.length > 0) {
@@ -115,7 +115,7 @@
                 };
 
                
-                fetch(`http://localhost:3000/api/v1/usuarios/${id_usuario}/skins`, {
+                fetch(`https://tp-2-intro-yr9m.onrender.com/api/v1/usuarios/${id_usuario}/skins`, {
                     method: "PUT",
                     headers: {
                         'Content-Type': 'application/json'

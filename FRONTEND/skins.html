@@ -64,7 +64,7 @@
             mostrar_skins();
             }
             mostrar_skins = function(){
-                fetch(`http://localhost:3000/api/v1/skins`)
+                fetch(`https://tp-2-intro-yr9m.onrender.com/api/v1/skins`)
                     .then(response => response.json())
                     .then(skins => {
                         if (skins && skins.length > 0) {
@@ -98,7 +98,7 @@
             }
             deleteSkin = function(id, nombre) {
                 alert("Borrando skin: " +  nombre);
-                fetch('http://localhost:3000/api/v1/skins/' + id, {
+                fetch('https://tp-2-intro-yr9m.onrender.com/api/v1/skins/' + id, {
                     method: 'DELETE'
                 })
                 .then(response => response.json())
