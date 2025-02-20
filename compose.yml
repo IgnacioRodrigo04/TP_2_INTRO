@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  database:
+    image: postgres:14
+    container_name: database
+    environment:
+      POSTGRES_USER: Intro
+      POSTGRES_PASSWORD: contraseña_database
+      POSTGRES_DB: Skins_cs
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./Backend/backend/psql_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    depends_on:
+      - database
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://Intro:contraseña_database@database:5432/Skins_cs
+    volumes:
+      - ./backend:/app
+    command: ["npm", "run", "dev"]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    depends_on:
+      - backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./frontend:/app
+    command: ["npm", "start"]
+
+volumes:
+  pgdata:
