@@ -64,7 +64,7 @@
                 const usuarioId = urlParams.get("usuarioId");
 
                 if (usuarioId) {
-                    fetch(`https://tp-2-intro-yr9m.onrender.com/api/v1/usuarios/${usuarioId}/historial`)
+                    fetch(`http://localhost:3000/api/v1/usuarios/${usuarioId}/historial`)
                         .then(response => response.json())
                         .then(historial_usuario => {
                             const tableBody = document.getElementById("historial-table-body");
