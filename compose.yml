@@ -15,8 +15,8 @@ services:
 
   backend:
     build:
-      context: ./Backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./Backend/Dockerfile  
     container_name: Backend
     depends_on:
       - database
@@ -30,8 +30,8 @@ services:
 
   frontend:
     build:
-      context: ./FRONTEND
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./FRONTEND/Dockerfile  
     container_name: FRONTEND
     depends_on:
       - backend
