@@ -4,11 +4,14 @@ WORKDIR /app
 
 COPY Backend/package.json Backend/package-lock.json ./
 
+
 RUN npm install
+
+RUN npx prisma generate
 
 RUN npm install -g nodemon
 
-COPY Backend ./ 
+COPY ./Backend ./ 
 
 EXPOSE 3000
 
