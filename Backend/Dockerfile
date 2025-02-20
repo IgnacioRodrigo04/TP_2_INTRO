@@ -2,11 +2,10 @@ FROM node:18
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY ./Backend/package.json ./Backend/package-lock.json ./
 
 RUN npm install
 
-RUN npm install -g nodemon
 
 COPY . .
 
