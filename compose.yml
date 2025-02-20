@@ -15,9 +15,9 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: ./Backend
       dockerfile: Dockerfile
-    container_name: backend
+    container_name: Backend
     depends_on:
       - database
     ports:
@@ -25,20 +25,20 @@ services:
     environment:
       DATABASE_URL: postgresql://Intro:contraseña_database@database:5432/Skins_cs
     volumes:
-      - ./backend:/app
+      - ./Backend:/app
     command: ["npm", "run", "dev"]
 
   frontend:
     build:
-      context: ./frontend
+      context: ./FRONTEND
       dockerfile: Dockerfile
-    container_name: frontend
+    container_name: FRONTEND
     depends_on:
       - backend
     ports:
       - "8000:8000"
     volumes:
-      - ./frontend:/app
+      - ./FRONTEND:/app
     command: ["npm", "start"]
 
 volumes:
