@@ -7,7 +7,7 @@ COPY Backend/package.json Backend/package-lock.json ./
 
 RUN npm install
 
-RUN npx prisma generate --schema=./prisma/schema.prisma
+RUN npx prisma generate --schema=./Backend/prisma/schema.prisma
 
 RUN npm install -g nodemon
 
