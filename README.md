@@ -1,6 +1,5 @@
 # TP_2_INTRO
 
-
 ### Como levantar el proyecto:
 ```bash
     sudo docker-compose up --build
